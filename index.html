@@ -160,6 +160,12 @@
   .pal-bar i{display:block;height:100%;border-radius:99px;}
   .pal-score{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;text-align:right;}
   @media (max-width:480px){.pal-row{grid-template-columns:28px 1fr 60px 34px;gap:8px;}}
+  .learn p{font-size:13.5px;line-height:1.7;margin:0 0 10px;}
+  .learn ul{margin:0 0 10px;}
+  .house-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 12px;}
+  .house-grid div{background:rgba(255,255,255,.02);border:1px solid var(--hairline);border-radius:9px;padding:7px 9px;font-size:12.5px;line-height:1.4;}
+  .house-grid b{font-family:'IBM Plex Mono',monospace;color:var(--live);margin-right:4px;}
+  @media (max-width:560px){.house-grid{grid-template-columns:repeat(2,1fr);}}
   .js-tooltip{position:fixed;z-index:9999;max-width:270px;background:var(--bg-card);border:1px solid var(--hairline);color:var(--text-hi);
     font:12px/1.5 'Space Grotesk',sans-serif;padding:8px 11px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none;}
   .js-tooltip b{font-weight:600;}
@@ -240,6 +246,14 @@
 
   <!-- Thème natal détaillé -->
   <div class="bulletin hidden" id="theme"></div>
+
+  <!-- Comprendre un thème -->
+  <div class="features-panel learn">
+    <details>
+      <summary data-i18n="learnTitle"></summary>
+      <div class="features-body" data-i18n-html="learnBody"></div>
+    </details>
+  </div>
 
   <!-- Fonctionnalités du site -->
   <div class="features-panel">
@@ -448,6 +462,27 @@ const T = {
     tipAsp: { sextile: 'Opportunité : un soutien facile à saisir.', carre: 'Tension : un défi qui pousse à agir.', trigone: 'Harmonie : ces deux énergies coopèrent naturellement.', opposition: 'Polarité : deux besoins à équilibrer.' },
     tipScore: (d, v) => `<b>${d}</b> : ${v}/100`,
     tipGlobal: 'Moyenne des trois domaines, d\'après les aspects entre le ciel du jour et le thème natal.',
+    learnTitle: '📖 Comprendre un thème : planètes, signes et maisons',
+    learnBody: `
+      <h3>Trois ingrédients</h3>
+      <p>En astrologie, un thème se lit avec trois ingrédients :</p>
+      <ul>
+        <li><b>les planètes</b> disent <i>quoi</i> : une énergie (Mars l'action, Vénus l'amour…) ;</li>
+        <li><b>les signes</b> disent <i>comment</i> : le style de cette énergie (Mars en Lion agit avec panache, Mars en Vierge avec méthode) ;</li>
+        <li><b>les maisons</b> disent <i>où</i> : le domaine de la vie où cette énergie s'exprime (travail, couple, famille…).</li>
+      </ul>
+      <h3>D'où viennent les maisons ?</h3>
+      <p>Les signes sont attachés aux étoiles. Les maisons, elles, sont attachées au <b>paysage autour du lieu de naissance</b>. On découpe le ciel en 12 secteurs à partir de l'horizon :</p>
+      <ul>
+        <li>la <b>maison 1</b> commence à l'<b>Ascendant</b>, le point de l'horizon est qui se levait au moment de la naissance ;</li>
+        <li>la <b>maison 10</b> commence au <b>Milieu du Ciel</b>, le point le plus haut du ciel ;</li>
+        <li>les autres suivent dans l'ordre, sous l'horizon pour les maisons 1 à 6 et au-dessus pour les maisons 7 à 12.</li>
+      </ul>
+      <p>Comme le ciel fait un tour complet en 24 heures, les maisons avancent d'environ un signe toutes les 2 heures. C'est pour ça que <b>l'heure et le lieu de naissance sont indispensables</b> pour les calculer, et que le site les masque quand l'heure est inconnue.</p>
+      <h3>Les 12 domaines, en bref</h3>
+      <div class="house-grid"><div><b>1</b>Personnalité</div><div><b>2</b>Argent, ressources</div><div><b>3</b>Échanges, entourage</div><div><b>4</b>Foyer, famille</div><div><b>5</b>Créativité, loisirs, enfants</div><div><b>6</b>Quotidien, travail, santé</div><div><b>7</b>Couple, associations</div><div><b>8</b>Transformations, biens partagés</div><div><b>9</b>Voyages, quête de sens</div><div><b>10</b>Carrière, image publique</div><div><b>11</b>Amis, projets</div><div><b>12</b>Vie intérieure, lâcher-prise</div></div>
+      <p><b>Exemple :</b> « Vénus en Gémeaux en maison 10 » se lit comme une manière d'aimer curieuse et bavarde (Vénus en Gémeaux) qui s'exprime surtout dans la vie professionnelle (maison 10), par exemple un métier de contact ou du charme au travail.</p>
+      <p class="f-dim">Il existe plusieurs façons de découper ces 12 secteurs. Le site utilise la plus simple, les <b>maisons égales</b> (12 parts de 30° depuis l'Ascendant). La plus répandue, <b>Placidus</b>, donne des maisons de tailles inégales. Et comme le rappelle le pied de page, tout ceci reste une grille de lecture symbolique, sans valeur prédictive démontrée.</p>`,
     featTitle: '✨ Fonctionnalités du site',
     featBody: `
       <h3>Météo astrale</h3>
@@ -565,6 +600,27 @@ const T = {
     tipAsp: { sextile: 'Opportunity: support that is easy to use.', carre: 'Tension: a challenge that pushes you to act.', trigone: 'Harmony: these two energies work together naturally.', opposition: 'Polarity: two needs to balance.' },
     tipScore: (d, v) => `<b>${d}</b>: ${v}/100`,
     tipGlobal: "Average of the three areas, based on aspects between today's sky and the birth chart.",
+    learnTitle: '📖 Understanding a chart: planets, signs and houses',
+    learnBody: `
+      <h3>Three ingredients</h3>
+      <p>In astrology, a chart is read with three ingredients:</p>
+      <ul>
+        <li><b>planets</b> say <i>what</i>: an energy (Mars action, Venus love…);</li>
+        <li><b>signs</b> say <i>how</i>: the style of that energy (Mars in Leo acts with flair, Mars in Virgo with method);</li>
+        <li><b>houses</b> say <i>where</i>: the area of life where that energy shows up (work, partnership, family…).</li>
+      </ul>
+      <h3>Where do houses come from?</h3>
+      <p>Signs are tied to the stars. Houses, on the other hand, are tied to the <b>landscape around the place of birth</b>. The sky is divided into 12 sectors starting from the horizon:</p>
+      <ul>
+        <li><b>house 1</b> starts at the <b>Ascendant</b>, the point of the eastern horizon that was rising at the moment of birth;</li>
+        <li><b>house 10</b> starts at the <b>Midheaven</b>, the highest point of the sky;</li>
+        <li>the others follow in order, below the horizon for houses 1 to 6 and above it for houses 7 to 12.</li>
+      </ul>
+      <p>Since the sky turns a full circle in 24 hours, the houses shift by about one sign every 2 hours. That is why <b>the time and place of birth are essential</b> to compute them, and why the site hides them when the time is unknown.</p>
+      <h3>The 12 areas, in short</h3>
+      <div class="house-grid"><div><b>1</b>Personality</div><div><b>2</b>Money, resources</div><div><b>3</b>Communication, surroundings</div><div><b>4</b>Home, family</div><div><b>5</b>Creativity, leisure, children</div><div><b>6</b>Daily life, work, health</div><div><b>7</b>Partnerships</div><div><b>8</b>Transformation, shared assets</div><div><b>9</b>Travel, search for meaning</div><div><b>10</b>Career, public image</div><div><b>11</b>Friends, projects</div><div><b>12</b>Inner life, letting go</div></div>
+      <p><b>Example:</b> “Venus in Gemini in house 10” reads as a curious, talkative way of loving (Venus in Gemini) that shows up mostly in professional life (house 10), for instance a people-facing job or charm at work.</p>
+      <p class="f-dim">There are several ways to divide these 12 sectors. The site uses the simplest, <b>equal houses</b> (12 slices of 30° from the Ascendant). The most widespread, <b>Placidus</b>, gives houses of unequal size. And as the footer says, all this remains a symbolic reading grid, with no demonstrated predictive value.</p>`,
     featTitle: '✨ Site features',
     featBody: `
       <h3>Astro weather</h3>
