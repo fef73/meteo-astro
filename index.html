@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciel des proches</title>
+<meta name="description" content="Météo astrale de la famille : thèmes natals et ciel du jour, calculés localement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,600&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1622; --bg-panel:#101f30; --bg-card:#132539; --hairline:#22384f;
+    --text-hi:#f3f6f9; --text-lo:#8fa4b8;
+    --amber:#f4a261; --coral:#e76f51; --teal:#2a9d8f; --azure:#457b9d; --live:#7ee4b8; --gold:#ffd166;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(69,123,157,0.18), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 90% 0%, rgba(255,209,102,0.08), transparent 55%),
+      var(--bg);
+    color:var(--text-hi); font-family:'Space Grotesk',sans-serif; min-height:100vh; padding:28px 16px 60px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
 
+  header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;
+    border-bottom:1px solid var(--hairline);padding-bottom:22px;margin-bottom:26px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--live);display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 2.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(126,228,184,.55);}70%{box-shadow:0 0 0 9px rgba(126,228,184,0);}100%{box-shadow:0 0 0 0 rgba(126,228,184,0);}}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-style:italic;font-size:clamp(28px,4vw,42px);margin:0;letter-spacing:-.01em;}
+  .subtitle{color:var(--text-lo);font-size:14px;margin-top:6px;max-width:52ch;}
+  .day-toggle{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .day-toggle-btn{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--bg-card);color:var(--text-lo);
+    border:1px solid var(--hairline);border-radius:999px;padding:7px 16px;cursor:pointer;transition:border-color .15s,color .15s,background .15s;}
+  .day-toggle-btn:hover{border-color:var(--live);}
+  .day-toggle-btn.active{background:rgba(126,228,184,0.12);border-color:var(--live);color:var(--text-hi);font-weight:500;}
+  .meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-lo);text-align:right;line-height:1.7;}
+  .meta-buttons{display:flex;gap:8px;margin-top:6px;justify-content:flex-end;flex-wrap:wrap;}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg-card);color:var(--text-hi);
+    border:1px solid var(--hairline);border-radius:6px;padding:6px 12px;cursor:pointer;transition:border-color .15s,transform .1s;}
+  .btn:hover{border-color:var(--azure);}
+  .btn:active{transform:scale(.97);}
+  .btn:focus-visible,.day-toggle-btn:focus-visible{outline:2px solid var(--live);outline-offset:2px;}
+  .btn-live{border-color:rgba(126,228,184,.5);color:var(--live);}
+
+  .bulletin{background:var(--bg-panel);border:1px solid var(--hairline);border-radius:16px;padding:20px 22px 22px;margin-top:22px;}
+  .bulletin-header{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--live);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .bulletin-header .right{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--text-lo);font-size:11.5px;}
+  .bulletin-summary{font-size:14.5px;line-height:1.65;max-width:70ch;}
+  .sky-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px;}
+  .sky-chip{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-lo);background:rgba(255,255,255,.02);
+    border:1px solid var(--hairline);border-radius:10px;padding:10px 12px;line-height:1.5;}
+  .sky-chip b{display:block;color:var(--text-hi);font-size:14px;font-weight:600;margin-top:2px;}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px;align-items:start;}
+  .card{background:var(--bg-card);border:1px solid var(--hairline);border-radius:14px;padding:16px 16px 12px;position:relative;overflow:hidden;curso
