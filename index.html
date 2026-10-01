@@ -135,6 +135,20 @@
   footer a{color:var(--text-lo);}
   .contact{display:inline-block;margin-top:12px;color:var(--live);text-decoration:none;border:1px solid var(--hairline);border-radius:8px;padding:5px 12px;}
   @media (max-width:640px){.meta{text-align:left;}.meta-buttons{justify-content:flex-start;}header{flex-direction:column;align-items:flex-start;}}
+
+  /* Fonctionnalités du site */
+  .features-panel{margin-top:22px;}
+  .features-panel details{background:var(--bg-panel);border:1px solid var(--hairline);border-radius:16px;padding:4px 22px;}
+  .features-panel summary{cursor:pointer;padding:15px 0;font-size:15px;font-weight:500;list-style:none;display:flex;align-items:center;gap:9px;user-select:none;}
+  .features-panel summary::-webkit-details-marker{display:none;}
+  .features-panel summary::before{content:"▸";color:var(--live);font-size:13px;transition:transform .15s;display:inline-block;}
+  .features-panel details[open] summary::before{transform:rotate(90deg);}
+  .features-body{padding:2px 0 20px;}
+  .features-panel h3{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--live);margin:18px 0 8px;}
+  .features-panel h3:first-child{margin-top:4px;}
+  .features-panel ul{margin:0;padding-left:20px;font-size:13.5px;line-height:1.7;}
+  .features-panel li{margin-bottom:4px;}
+  .features-panel .f-dim{color:var(--text-lo);}
 </style>
 </head>
 <body>
@@ -189,6 +203,42 @@
 
   <!-- Thème natal détaillé -->
   <div class="bulletin hidden" id="theme"></div>
+
+  <!-- Fonctionnalités du site -->
+  <div class="features-panel">
+    <details>
+      <summary>✨ Fonctionnalités du site</summary>
+      <div class="features-body">
+        <h3>Météo astrale</h3>
+        <ul>
+          <li><b>Bulletin cosmique</b> : signes du Soleil et de la Lune, phase lunaire avec pourcentage d'illumination, aspect planétaire le plus serré du jour et planètes rétrogrades.</li>
+          <li><b>Une carte par proche</b> : note globale sur 100 et étoiles pour l'amour, le travail et l'énergie, calculées d'après les transits du jour sur le thème natal.</li>
+          <li><b>Deux phrases explicatives</b> par carte, tirées des aspects les plus marquants du moment.</li>
+          <li><b>Classement</b> 🥇🥈🥉 des proches selon leur ciel du jour.</li>
+          <li><b>Périodes</b> : aujourd'hui, demain, après-demain ou 7 jours (moyenne, avec le meilleur jour et le plus délicat).</li>
+        </ul>
+        <h3>Thème natal</h3>
+        <ul>
+          <li><b>Roue du thème</b> : signes colorés par élément, maisons, Ascendant (AS), Milieu du Ciel (MC) et aspects entre planètes (vert harmonieux, rouge tendu).</li>
+          <li><b>Tableau des positions</b> du Soleil à Neptune : signe, degré, maison et rétrogradation (℞).</li>
+          <li><b>Interprétation</b> : Soleil, Lune, Ascendant, planètes personnelles et sociales, élément dominant.</li>
+          <li><b>Heure inconnue</b> acceptée : l'Ascendant et les maisons sont alors masqués.</li>
+        </ul>
+        <h3>Ajout et gestion</h3>
+        <ul>
+          <li><b>＋ Ajouter un thème</b> : prénom, date, heure et lieu de naissance, avec recherche de ville.</li>
+          <li><b>Heure d'été historique</b> prise en compte grâce au fuseau horaire du lieu.</li>
+          <li><b>Suppression</b> d'un thème avec la croix ✕ de sa carte.</li>
+          <li><b>📤 Partager</b> le lien du site.</li>
+        </ul>
+        <h3>Sous le capot</h3>
+        <ul>
+          <li>Positions planétaires calculées <b>dans le navigateur</b>, sans serveur ni clé API (écart inférieur à 0,05° avec les éphémérides de référence).</li>
+          <li class="f-dim">Thèmes enregistrés uniquement sur cet appareil : rien n'est envoyé en ligne. Contenu à visée ludique.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
 
   <footer>
     Positions planétaires calculées localement (éléments orbitaux de P. Schlyter, précision de quelques minutes d'arc) · maisons égales<br>
