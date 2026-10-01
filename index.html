@@ -58,4 +58,670 @@
   .sky-chip b{display:block;color:var(--text-hi);font-size:14px;font-weight:600;margin-top:2px;}
 
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px;align-items:start;}
-  .card{background:var(--bg-card);border:1px solid var(--hairline);border-radius:14px;padding:16px 16px 12px;position:relative;overflow:hidden;curso
+  .card{background:var(--bg-card);border:1px solid var(--hairline);border-radius:14px;padding:16px 16px 12px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+  .card:hover{border-color:var(--azure);}
+  .card.selected{border-color:var(--live);}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);}
+  .card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:20px;background:rgba(255,255,255,.04);box-shadow:0 0 0 1px var(--hairline);flex:none;}
+  .card-names{font-size:14px;font-weight:500;}
+  .card-city{font-size:11.5px;color:var(--text-lo);font-family:'IBM Plex Mono',monospace;}
+  .card-del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-lo);cursor:pointer;font-size:13px;opacity:.5;padding:4px;}
+  .card-del:hover{opacity:1;color:var(--coral);}
+  .rank{position:absolute;top:14px;right:34px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);}
+  .card-score{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:30px;line-height:1;margin:4px 0 6px;}
+  .card-score span{font-size:14px;color:var(--text-lo);font-weight:400;}
+  .card-signs{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-lo);margin-bottom:10px;}
+  .card-signs b{color:var(--text-hi);font-weight:500;}
+  .horo{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;font-size:13px;align-items:baseline;
+    border-top:1px solid var(--hairline);padding-top:9px;}
+  .horo-k{color:var(--text-lo);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+  .stars{letter-spacing:1px;color:var(--gold);font-size:12.5px;white-space:nowrap;}
+  .stars i{font-style:normal;color:var(--text-lo);opacity:.45;}
+  .card-text{font-size:12.5px;line-height:1.5;color:var(--text-hi);margin-top:10px;padding-top:9px;border-top:1px dashed var(--hairline);}
+  .card-text p{margin:0 0 6px;}
+  .card-text .muted{color:var(--text-lo);}
+  .card-foot{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-lo);text-align:center;margin-top:6px;}
+
+  .hint-box{display:flex;align-items:center;gap:10px;background:var(--bg-panel);border:1px solid var(--hairline);border-radius:12px;
+    padding:12px 16px;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text-lo);}
+
+  /* Thème natal */
+  .theme-grid{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:22px;align-items:start;}
+  @media (max-width:760px){.theme-grid{grid-template-columns:1fr;}}
+  .wheel{display:block;width:100%;max-width:340px;margin:0 auto;height:auto;}
+  .w-ring{fill:none;stroke:var(--hairline);stroke-width:1;}
+  .w-sector{stroke:var(--hairline);stroke-width:.8;}
+  .w-sign{font:13px 'Space Grotesk',sans-serif;fill:var(--text-lo);text-anchor:middle;dominant-baseline:central;}
+  .w-house{font:8px 'IBM Plex Mono',monospace;fill:rgba(143,164,184,.6);text-anchor:middle;dominant-baseline:central;}
+  .w-axis{stroke:rgba(126,228,184,.55);stroke-width:1;}
+  .w-hl{stroke:rgba(143,164,184,.18);stroke-dasharray:2 3;}
+  .w-pl{font:bold 14px 'Space Grotesk',sans-serif;text-anchor:middle;dominant-baseline:central;}
+  .w-tick{stroke-width:1.2;}
+  .w-lbl{font:bold 8px 'IBM Plex Mono',monospace;fill:var(--live);}
+  .w-asp{stroke-width:.8;opacity:.55;}
+  table.pos{width:100%;border-collapse:collapse;font-size:13px;}
+  table.pos td{padding:5px 6px;border-bottom:1px solid var(--hairline);}
+  table.pos td.k{color:var(--text-lo);white-space:nowrap;}
+  table.pos td.deg{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-lo);text-align:right;white-space:nowrap;}
+  .interp{margin-top:16px;font-size:13.5px;line-height:1.6;}
+  .interp p{margin:0 0 8px;}
+  .interp b{font-weight:600;}
+  .sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--live);margin:16px 0 6px;}
+
+  /* Formulaire */
+  .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
+  .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-lo);margin-bottom:5px;}
+  .field input[type=text],.field input[type=date],.field input[type=time]{width:100%;background:var(--bg-card);color:var(--text-hi);
+    border:1px solid var(--hairline);border-radius:8px;padding:9px 10px;font:14px 'Space Grotesk',sans-serif;color-scheme:dark;}
+  .field input:focus{outline:none;border-color:var(--live);}
+  .check{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-lo);margin-top:6px;font-family:'IBM Plex Mono',monospace;}
+  .place-field{grid-column:span 2;position:relative;}
+  @media (max-width:560px){.place-field{grid-column:auto;}}
+  .suggest{position:absolute;left:0;right:0;top:100%;z-index:20;background:var(--bg-card);border:1px solid var(--hairline);
+    border-radius:8px;margin-top:4px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.45);}
+  .suggest button{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--hairline);
+    color:var(--text-hi);padding:9px 12px;cursor:pointer;font:13px 'Space Grotesk',sans-serif;}
+  .suggest button:last-child{border-bottom:none;}
+  .suggest button:hover{background:rgba(126,228,184,.08);}
+  .suggest small{color:var(--text-lo);font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  .form-actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  .form-msg{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-lo);}
+  .form-msg.err{color:var(--coral);}
+  .hidden{display:none !important;}
+
+  footer{margin-top:30px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-lo);text-align:center;line-height:1.7;}
+  footer a{color:var(--text-lo);}
+  .contact{display:inline-block;margin-top:12px;color:var(--live);text-decoration:none;border:1px solid var(--hairline);border-radius:8px;padding:5px 12px;}
+  @media (max-width:640px){.meta{text-align:left;}.meta-buttons{justify-content:flex-start;}header{flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow"><span class="pulse"></span> éphémérides calculées en direct</div>
+      <h1>Qui a le ciel le plus clément ?</h1>
+      <div class="subtitle" id="subtitle">Météo astrale des proches, d'après leur thème natal et le ciel du jour.</div>
+      <div class="day-toggle" id="day-toggle">
+        <button class="day-toggle-btn active" data-p="0">Aujourd'hui</button>
+        <button class="day-toggle-btn" data-p="1">Demain</button>
+        <button class="day-toggle-btn" data-p="2">Après-demain</button>
+        <button class="day-toggle-btn" data-p="7">7 jours</button>
+      </div>
+    </div>
+    <div class="meta">
+      <div id="updated-at">—</div>
+      <div class="meta-buttons">
+        <button class="btn btn-live" id="add-btn">＋ Ajouter un thème</button>
+        <button class="btn" id="share-btn">📤 Partager</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Formulaire d'ajout -->
+  <div class="bulletin hidden" id="form-block" style="margin-top:0;margin-bottom:22px;">
+    <div class="bulletin-header">✨ nouveau thème natal</div>
+    <div class="form">
+      <div class="field"><label for="f-name">Prénom</label><input type="text" id="f-name" maxlength="30" placeholder="Marine"></div>
+      <div class="field"><label for="f-date">Date de naissance</label><input type="date" id="f-date" min="1900-01-01" max="2100-12-31"></div>
+      <div class="field"><label for="f-time">Heure (locale)</label><input type="time" id="f-time" value="12:00">
+        <label class="check"><input type="checkbox" id="f-notime"> heure inconnue</label></div>
+      <div class="field place-field"><label for="f-place">Lieu de naissance</label>
+        <input type="text" id="f-place" placeholder="Ville…" autocomplete="off">
+        <div class="suggest hidden" id="suggest"></div></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-live" id="f-save">Calculer et ajouter</button>
+      <button class="btn" id="f-cancel">Annuler</button>
+      <span class="form-msg" id="f-msg"></span>
+    </div>
+  </div>
+
+  <!-- Bulletin cosmique -->
+  <div class="bulletin" id="sky" style="margin-top:0;"></div>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="hint-box"><span>💡</span><span>Touchez une carte pour afficher le thème natal complet de la personne.</span></div>
+
+  <!-- Thème natal détaillé -->
+  <div class="bulletin hidden" id="theme"></div>
+
+  <footer>
+    Positions planétaires calculées localement (éléments orbitaux de P. Schlyter, précision de quelques minutes d'arc) · maisons égales<br>
+    Lieux et fuseaux horaires : géocodage Open-Meteo.com · Thèmes enregistrés uniquement dans ce navigateur<br>
+    Contenu à visée ludique — l'astrologie n'a pas de valeur prédictive démontrée<br>
+    <div style="margin-top:14px;">Créé par fef73 avec claude.ai</div>
+    <a class="contact" href="https://forms.gle/EMZtxMBJCUE6HJXp8" target="_blank" rel="noopener">✉️ Contact / suggestion</a>
+  </footer>
+</div>
+
+<script>
+// ==CORE==
+const RAD = Math.PI / 180, DEG = 180 / Math.PI;
+const norm = x => ((x % 360) + 360) % 360;
+const sind = x => Math.sin(x * RAD), cosd = x => Math.cos(x * RAD);
+const angDiff = (a, b) => { const d = Math.abs(norm(a - b)); return d > 180 ? 360 - d : d; };
+const signedDiff = (a, b) => ((b - a + 540) % 360) - 180;
+
+// jours depuis 2000 jan 0.0 UT
+const dayNumber = ms => ms / 86400000 + 2440587.5 - 2451543.5;
+
+const ELEMENTS = {
+  mercury: d => [48.3313 + 3.24587e-5*d, 7.0047 + 5.00e-8*d, 29.1241 + 1.01444e-5*d, 0.387098, 0.205635 + 5.59e-10*d, 168.6562 + 4.0923344368*d],
+  venus:   d => [76.6799 + 2.46590e-5*d, 3.3946 + 2.75e-8*d, 54.8910 + 1.38374e-5*d, 0.723330, 0.006773 - 1.302e-9*d, 48.0052 + 1.6021302244*d],
+  mars:    d => [49.5574 + 2.11081e-5*d, 1.8497 - 1.78e-8*d, 286.5016 + 2.92961e-5*d, 1.523688, 0.093405 + 2.516e-9*d, 18.6021 + 0.5240207766*d],
+  jupiter: d => [100.4542 + 2.76854e-5*d, 1.3030 - 1.557e-7*d, 273.8777 + 1.64505e-5*d, 5.20256, 0.048498 + 4.469e-9*d, 19.8950 + 0.0830853001*d],
+  saturn:  d => [113.6634 + 2.38980e-5*d, 2.4886 - 1.081e-7*d, 339.3939 + 2.97661e-5*d, 9.55475, 0.055546 - 9.499e-9*d, 316.9670 + 0.0334442282*d],
+  uranus:  d => [74.0005 + 1.3978e-5*d, 0.7733 + 1.9e-8*d, 96.6612 + 3.0565e-5*d, 19.18171 - 1.55e-8*d, 0.047318 + 7.45e-9*d, 142.5905 + 0.011725806*d],
+  neptune: d => [131.7806 + 3.0173e-5*d, 1.7700 - 2.55e-7*d, 272.8461 - 6.027e-6*d, 30.05826 + 3.313e-8*d, 0.008606 + 2.15e-9*d, 260.2471 + 0.005995147*d]
+};
+
+function kepler(M, e) {
+  M = norm(M);
+  let E = M + e * DEG * sind(M) * (1 + e * cosd(M));
+  for (let k = 0; k < 15; k++) {
+    const dE = (E - e * DEG * sind(E) - M) / (1 - e * cosd(E));
+    E -= dE;
+    if (Math.abs(dE) < 1e-7) break;
+  }
+  return E;
+}
+
+function orbit([N, i, w, a, e, M]) {
+  const E = kepler(M, e);
+  const xv = a * (cosd(E) - e), yv = a * Math.sqrt(1 - e * e) * sind(E);
+  const v = Math.atan2(yv, xv) * DEG, r = Math.hypot(xv, yv), vw = v + w;
+  return {
+    x: r * (cosd(N) * cosd(vw) - sind(N) * sind(vw) * cosd(i)),
+    y: r * (sind(N) * cosd(vw) + cosd(N) * sind(vw) * cosd(i)),
+    z: r * sind(vw) * sind(i), r
+  };
+}
+
+// Longitudes écliptiques géocentriques (équinoxe de la date) + données sidérales
+function skyAt(ms) {
+  const d = dayNumber(ms);
+  const ecl = 23.4393 - 3.563e-7 * d;
+  const ws = 282.9404 + 4.70935e-5 * d, es = 0.016709 - 1.151e-9 * d, Ms = norm(356.0470 + 0.9856002585 * d);
+  const Es = kepler(Ms, es);
+  const xv = cosd(Es) - es, yv = Math.sqrt(1 - es * es) * sind(Es);
+  const lonSun = norm(Math.atan2(yv, xv) * DEG + ws), rs = Math.hypot(xv, yv);
+  const xs = rs * cosd(lonSun), ys = rs * sind(lonSun);
+  const lon = { sun: lonSun };
+
+  // Lune
+  const Nm = 125.1228 - 0.0529538083 * d, wm = 318.0634 + 0.1643573223 * d, Mm = norm(115.3654 + 13.0649929509 * d);
+  const mo = orbit([Nm, 5.1454, wm, 60.2666, 0.0549, Mm]);
+  const Ls = Ms + ws, Lm = Mm + wm + Nm, D = Lm - Ls, F = Lm - Nm;
+  lon.moon = norm(Math.atan2(mo.y, mo.x) * DEG
+    - 1.274 * sind(Mm - 2*D) + 0.658 * sind(2*D) - 0.186 * sind(Ms)
+    - 0.059 * sind(2*Mm - 2*D) - 0.057 * sind(Mm - 2*D + Ms) + 0.053 * sind(Mm + 2*D)
+    + 0.046 * sind(2*D - Ms) + 0.041 * sind(Mm - Ms) - 0.035 * sind(D)
+    - 0.031 * sind(Mm + Ms) - 0.015 * sind(2*F - 2*D) + 0.011 * sind(Mm - 4*D));
+
+  // Planètes
+  const Mj = norm(19.8950 + 0.0830853001 * d), Mst = norm(316.9670 + 0.0334442282 * d), Mu = norm(142.5905 + 0.011725806 * d);
+  for (const p of Object.keys(ELEMENTS)) {
+    const h = orbit(ELEMENTS[p](d));
+    let hl = Math.atan2(h.y, h.x) * DEG;
+    const hb = Math.atan2(h.z, Math.hypot(h.x, h.y)) * DEG;
+    let dl = 0;
+    if (p === 'jupiter') dl = -0.332*sind(2*Mj-5*Mst-67.6) - 0.056*sind(2*Mj-2*Mst+21) + 0.042*sind(3*Mj-5*Mst+21)
+      - 0.036*sind(Mj-2*Mst) + 0.022*cosd(Mj-Mst) + 0.023*sind(2*Mj-3*Mst+52) - 0.016*sind(Mj-5*Mst-69);
+    if (p === 'saturn') dl = 0.812*sind(2*Mj-5*Mst-67.6) - 0.229*cosd(2*Mj-4*Mst-2) + 0.119*sind(Mj-2*Mst-3)
+      + 0.046*sind(2*Mj-6*Mst-69) + 0.014*sind(Mj-3*Mst+32);
+    if (p === 'uranus') dl = 0.040*sind(Mst-2*Mu+6) + 0.035*sind(Mst-3*Mu+33) - 0.015*sind(Mj-Mu+20);
+    hl += dl;
+    const xh = h.r * cosd(hb) * cosd(hl), yh = h.r * cosd(hb) * sind(hl);
+    lon[p] = norm(Math.atan2(yh + ys, xh + xs) * DEG);
+  }
+  const ut = ((ms % 86400000) + 86400000) % 86400000 / 3600000;
+  const gmst = norm(Ls + 180 + ut * 15); // degrés
+  return { lon, ecl, gmst };
+}
+
+// Ascendant et Milieu du Ciel
+function angles(ms, lat, lonEast) {
+  const { ecl, gmst } = skyAt(ms);
+  const ramc = norm(gmst + lonEast);
+  const mc = norm(Math.atan2(sind(ramc), cosd(ramc) * cosd(ecl)) * DEG);
+  const asc = norm(Math.atan2(cosd(ramc), -(sind(ramc) * cosd(ecl) + Math.tan(lat * RAD) * sind(ecl))) * DEG);
+  return { asc, mc };
+}
+
+// Heure locale (fuseau IANA, y compris historique) → timestamp UTC
+function localToUTC(dateStr, timeStr, tz) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const [hh, mm] = timeStr.split(':').map(Number);
+  const wall = Date.UTC(y, m - 1, d, hh, mm);
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23',
+    year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+  const offsetAt = t => {
+    const p = Object.fromEntries(fmt.formatToParts(new Date(t)).map(x => [x.type, x.value]));
+    return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute) - Math.floor(t / 60000) * 60000;
+  };
+  let t = wall - offsetAt(wall);
+  t = wall - offsetAt(t);
+  return t;
+}
+// ==/CORE==
+
+// ---------- Données d'interprétation ----------
+const SIGNS = [
+  ['Bélier','♈','feu','directe, ardente et pionnière'],
+  ['Taureau','♉','terre','stable, sensuelle et persévérante'],
+  ['Gémeaux','♊','air','curieuse, vive et communicative'],
+  ['Cancer','♋','eau','sensible, protectrice et tournée vers les siens'],
+  ['Lion','♌','feu','généreuse, rayonnante et fière'],
+  ['Vierge','♍','terre','précise, serviable et analytique'],
+  ['Balance','♎','air','diplomate, élégante et éprise d\'harmonie'],
+  ['Scorpion','♏','eau','intense, magnétique et passionnée'],
+  ['Sagittaire','♐','feu','optimiste, aventureuse et éprise de liberté'],
+  ['Capricorne','♑','terre','ambitieuse, patiente et responsable'],
+  ['Verseau','♒','air','indépendante, originale et humaniste'],
+  ['Poissons','♓','eau','intuitive, rêveuse et compatissante']
+].map(([n, g, el, t]) => ({ n, g: g + '\uFE0E', el, t }));
+
+const PLANETS = [
+  { k:'sun',     n:'Soleil',  g:'☉', c:'#ffd166', kw:'votre identité profonde', ok:'vous affirmer', ko:'évitez les bras de fer' },
+  { k:'moon',    n:'Lune',    g:'☽', c:'#dfe7ee', kw:'votre monde émotionnel', ok:'prendre soin de vous et des vôtres', ko:'émotions à fleur de peau' },
+  { k:'mercury', n:'Mercure', g:'☿', c:'#7ee4b8', kw:'votre façon de penser et de communiquer', ok:'communiquer et négocier', ko:'relisez avant d\'envoyer' },
+  { k:'venus',   n:'Vénus',   g:'♀', c:'#f4a3c0', kw:'votre manière d\'aimer', ok:'partager un moment tendre', ko:'susceptibilités possibles en amour' },
+  { k:'mars',    n:'Mars',    g:'♂', c:'#e76f51', kw:'votre énergie et votre façon d\'agir', ok:'passer à l\'action', ko:'gare à l\'impatience' },
+  { k:'jupiter', n:'Jupiter', g:'♃', c:'#f4a261', kw:'votre chance et votre goût de l\'expansion', ok:'saisir une opportunité', ko:'ne promettez pas trop' },
+  { k:'saturn',  n:'Saturne', g:'♄', c:'#a8b5c2', kw:'votre sens des responsabilités', ok:'poser des bases solides', ko:'un peu de lourdeur, patience' },
+  { k:'uranus',  n:'Uranus',  g:'♅', c:'#48cae4', kw:'votre besoin de changement', ok:'tenter du neuf', ko:'imprévus à gérer' },
+  { k:'neptune', n:'Neptune', g:'♆', c:'#457b9d', kw:'votre imaginaire', ok:'rêver et créer', ko:'restez lucide' }
+];
+const P = Object.fromEntries(PLANETS.map(p => [p.k, p]));
+
+const HOUSES = ['de la personnalité','des ressources et des finances','des échanges et de l\'entourage proche',
+  'du foyer et de la famille','de la créativité, des loisirs et des enfants','du quotidien, du travail et de la santé',
+  'du couple et des associations','des transformations et des ressources partagées','des voyages et de la quête de sens',
+  'de la carrière et de l\'image publique','des amitiés et des projets','de l\'intériorité et du lâcher-prise'];
+
+const ASPECTS = [
+  { n:'conjonction', a:0,   orb:6, g:'☌', q:null },
+  { n:'sextile',     a:60,  orb:4, g:'⚹', q:0.7 },
+  { n:'carré',       a:90,  orb:5, g:'□', q:-0.9 },
+  { n:'trigone',     a:120, orb:5, g:'△', q:1 },
+  { n:'opposition',  a:180, orb:6, g:'☍', q:-0.7 }
+];
+const ASP_VERB = { conjonction:'passe sur', sextile:'en sextile avec', 'carré':'en carré avec', trigone:'en trigone avec', opposition:'s\'oppose à' };
+const CONJ_Q = { sun:0.4, moon:0.4, mercury:0.4, venus:0.9, jupiter:0.9, mars:-0.4, saturn:-0.8 };
+const T_WEIGHT = { sun:1, moon:0.8, mercury:0.9, venus:1, mars:1.1, jupiter:1.2, saturn:1.2 };
+const TRANSITING = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
+const NATAL_PTS = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
+const DOMAINS = {
+  amour:   { lbl:'❤️ Amour',   pl:['venus','moon','mars'] },
+  travail: { lbl:'💼 Travail', pl:['saturn','jupiter','mercury','sun'] },
+  energie: { lbl:'⚡ Énergie', pl:['mars','sun','moon'] }
+};
+const ACCENTS = ['#f4a261','#7ee4b8','#e76f51','#48cae4','#ffd166','#2a9d8f','#c3a6ff','#f4a3c0'];
+
+const signOf = lon => SIGNS[Math.floor(norm(lon) / 30)];
+const fmtDeg = lon => { const x = norm(lon) % 30; const d = Math.floor(x); const m = Math.floor((x - d) * 60); return `${d}°${String(m).padStart(2,'0')}′`; };
+const houseOf = (lon, asc) => Math.floor(norm(lon - asc) / 30) + 1;
+
+// ---------- Stockage ----------
+const STORE_KEY = 'ciel-des-proches-v1';
+const DEMO = [{ id:'demo', name:'Exemple', date:'1985-07-14', time:'08:30',
+  place:{ label:'Paris, Île-de-France, France', lat:48.8534, lon:2.3488, tz:'Europe/Paris' } }];
+function loadPeople() {
+  try { const v = JSON.parse(localStorage.getItem(STORE_KEY)); if (Array.isArray(v)) return v; } catch (e) {}
+  return DEMO.slice();
+}
+function savePeople() { try { localStorage.setItem(STORE_KEY, JSON.stringify(people)); } catch (e) {} }
+
+let people = loadPeople();
+let period = 0;
+let selectedId = null;
+
+// ---------- Calculs ----------
+function natalChart(p) {
+  const ms = localToUTC(p.date, p.time || '12:00', p.place.tz);
+  const { lon } = skyAt(ms);
+  const res = { ms, lon, timeKnown: !!p.time };
+  if (p.time) Object.assign(res, angles(ms, p.place.lat, p.place.lon));
+  // rétrogradations à la naissance
+  const next = skyAt(ms + 86400000).lon;
+  res.retro = {};
+  for (const k of ['mercury','venus','mars','jupiter','saturn','uranus','neptune']) res.retro[k] = signedDiff(lon[k], next[k]) < 0;
+  return res;
+}
+
+function findAspect(a, b) {
+  const sep = angDiff(a, b);
+  for (const asp of ASPECTS) { const delta = Math.abs(sep - asp.a); if (delta <= asp.orb) return { asp, delta }; }
+  return null;
+}
+
+function dayForecast(natal, ms) {
+  const tr = skyAt(ms).lon;
+  const hits = [];
+  for (const t of TRANSITING) for (const n of NATAL_PTS) {
+    const f = findAspect(tr[t], natal.lon[n]);
+    if (!f) continue;
+    const q = f.asp.q === null ? CONJ_Q[t] : f.asp.q;
+    const s = q * T_WEIGHT[t] * (1 - f.delta / f.asp.orb * 0.7);
+    hits.push({ t, n, asp: f.asp, delta: f.delta, s });
+  }
+  // humeur : élément de la Lune du jour vs Lune natale
+  const elT = signOf(tr.moon).el, elN = signOf(natal.lon.moon).el;
+  const compat = { feu:'air', air:'feu', terre:'eau', eau:'terre' };
+  const mood = elT === elN ? 0.5 : (compat[elT] === elN ? 0.3 : -0.2);
+  const scores = {};
+  for (const [k, dom] of Object.entries(DOMAINS)) {
+    let sum = (k === 'amour' || k === 'energie') ? mood : 0;
+    for (const h of hits) if (dom.pl.includes(h.t) || dom.pl.includes(h.n)) sum += h.s;
+    scores[k] = Math.max(8, Math.min(96, Math.round(50 + 14 * sum)));
+  }
+  scores.global = Math.round((scores.amour + scores.travail + scores.energie) / 3);
+  hits.sort((x, y) => Math.abs(y.s) - Math.abs(x.s));
+  return { scores, hits, moonSign: signOf(tr.moon) };
+}
+
+function aspectSentence(h) {
+  const T = P[h.t], N = P[h.n];
+  if (h.asp.n === 'conjonction') return `${T.g} ${T.n} passe sur votre ${N.n} : projecteur sur ${N.kw}.`;
+  const verb = ASP_VERB[h.asp.n];
+  return h.s >= 0
+    ? `${T.g} ${T.n} ${verb} votre ${N.n} : bon moment pour ${N.ok}.`
+    : `${T.g} ${T.n} ${verb} votre ${N.n} : ${N.ko}.`;
+}
+
+function noonOf(offsetDays) {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + offsetDays, 12, 0).getTime();
+}
+
+function periodForecast(natal) {
+  if (period !== 7) return { ...dayForecast(natal, noonOf(period)), days: null };
+  const days = [];
+  for (let i = 0; i < 7; i++) days.push({ ms: noonOf(i), f: dayForecast(natal, noonOf(i)) });
+  const avg = k => Math.round(days.reduce((s, d) => s + d.f.scores[k], 0) / 7);
+  const scores = { amour: avg('amour'), travail: avg('travail'), energie: avg('energie'), global: avg('global') };
+  const best = days.reduce((a, b) => b.f.scores.global > a.f.scores.global ? b : a);
+  const worst = days.reduce((a, b) => b.f.scores.global < a.f.scores.global ? b : a);
+  return { scores, hits: best.f.hits, days, best, worst };
+}
+
+// ---------- Rendu ----------
+const stars = v => { const n = Math.max(1, Math.min(5, Math.round(v / 20))); return '★'.repeat(n) + '<i>' + '★'.repeat(5 - n) + '</i>'; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const dayName = ms => new Date(ms).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric' });
+const periodLabel = () => ({ 0:'aujourd\'hui', 1:'demain', 2:'après-demain', 7:'sur 7 jours' })[period];
+
+function renderSky() {
+  const ms = noonOf(period === 7 ? 0 : period);
+  const { lon } = skyAt(ms);
+  const next = skyAt(ms + 86400000).lon;
+  const elong = norm(lon.moon - lon.sun);
+  const illum = Math.round((1 - cosd(elong)) / 2 * 100);
+  const phases = [['🌑','Nouvelle lune'],['🌒','Premier croissant'],['🌓','Premier quartier'],['🌔','Gibbeuse croissante'],
+    ['🌕','Pleine lune'],['🌖','Gibbeuse décroissante'],['🌗','Dernier quartier'],['🌘','Dernier croissant']];
+  const ph = phases[Math.floor(norm(elong + 22.5) / 45) % 8];
+  const retro = ['mercury','venus','mars','jupiter','saturn','uranus','neptune'].filter(k => signedDiff(lon[k], next[k]) < 0);
+  let tight = null;
+  const ks = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
+  for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) {
+    const f = findAspect(lon[ks[i]], lon[ks[j]]);
+    if (f && (!tight || f.delta < tight.delta)) tight = { ...f, a: ks[i], b: ks[j] };
+  }
+  const sun = signOf(lon.sun), moon = signOf(lon.moon);
+  const date = new Date(ms).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('sky').innerHTML = `
+    <div class="bulletin-header">🔭 bulletin cosmique <span class="right">${period === 7 ? 'à partir du ' : ''}${esc(date)}</span></div>
+    <div class="bulletin-summary">Le Soleil traverse le <b>${sun.n}</b> ${sun.g} et la Lune est en <b>${moon.n}</b> ${moon.g}.
+      ${retro.length ? `En rétrogradation : ${retro.map(k => P[k].n).join(', ')}.` : 'Aucune planète rétrograde.'}</div>
+    <div class="sky-row">
+      <div class="sky-chip">Phase lunaire<b>${ph[0]} ${ph[1]} · ${illum} %</b></div>
+      <div class="sky-chip">Aspect le plus serré<b>${tight ? `${P[tight.a].g} ${P[tight.a].n} ${tight.asp.g} ${P[tight.b].n} ${P[tight.b].g}` : '—'}</b>${tight ? `${tight.asp.n}, orbe ${tight.delta.toFixed(1).replace('.', ',')}°` : ''}</div>
+      <div class="sky-chip">Rétrogrades<b>${retro.length ? retro.map(k => P[k].g + ' ' + P[k].n).join(' · ') : 'aucune'}</b></div>
+    </div>`;
+}
+
+function renderCards() {
+  const subtitle = document.getElementById('subtitle');
+  const names = people.map(p => p.name);
+  subtitle.textContent = names.length
+    ? `Météo astrale ${periodLabel()} de ${names.length > 1 ? names.slice(0, -1).join(', ') + ' et ' + names.at(-1) : names[0]}, d'après leur thème natal.`
+    : 'Ajoutez un premier thème natal pour commencer.';
+
+  const rows = people.map((p, i) => {
+    const natal = natalChart(p);
+    return { p, i, natal, fc: periodForecast(natal) };
+  });
+  const ranking = rows.slice().sort((a, b) => b.fc.scores.global - a.fc.scores.global);
+  const medals = ['🥇','🥈','🥉'];
+
+  document.getElementById('cards').innerHTML = rows.map(({ p, i, natal, fc }) => {
+    const sun = signOf(natal.lon.sun), moon = signOf(natal.lon.moon);
+    const asc = natal.timeKnown ? signOf(natal.asc) : null;
+    const rank = rows.length > 1 ? ranking.findIndex(r => r.p.id === p.id) : -1;
+    const lines = fc.hits.slice(0, 2).map(h => `<p>${aspectSentence(h)}</p>`).join('')
+      || '<p class="muted">Ciel calme : peu d\'aspects marquants, journée neutre.</p>';
+    const week = fc.days ? `<p class="muted">Meilleur jour : <b style="color:var(--text-hi)">${dayName(fc.best.ms)}</b> · plus délicat : ${dayName(fc.worst.ms)}</p>` : '';
+    return `<div class="card${p.id === selectedId ? ' selected' : ''}" style="--accent:${ACCENTS[i % ACCENTS.length]}" data-id="${esc(p.id)}" tabindex="0">
+      ${rank >= 0 && rank < 3 ? `<span class="rank">${medals[rank]}</span>` : ''}
+      <button class="card-del" data-del="${esc(p.id)}" title="Supprimer">✕</button>
+      <div class="card-top"><div class="avatar">${sun.g}</div>
+        <div><div class="card-names">${esc(p.name)}</div><div class="card-city">${esc(p.place.label.split(',')[0])} · ${new Date(p.date).toLocaleDateString('fr-FR')}</div></div></div>
+      <div class="card-score">${fc.scores.global}<span> /100</span></div>
+      <div class="card-signs">☉ <b>${sun.n}</b> · ☽ <b>${moon.n}</b>${asc ? ` · AS <b>${asc.n}</b>` : ''}</div>
+      <div class="horo">${Object.entries(DOMAINS).map(([k, d]) => `<span class="horo-k">${d.lbl}</span><span class="stars">${stars(fc.scores[k])}</span>`).join('')}</div>
+      <div class="card-text">${lines}${week}</div>
+      <div class="card-foot">▾ voir le thème</div>
+    </div>`;
+  }).join('');
+  document.getElementById('updated-at').textContent =
+    'calculé le ' + new Date().toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function wheelSVG(natal) {
+  const C = 170, R1 = 160, R2 = 132, R3 = 100;
+  const asc = natal.timeKnown ? natal.asc : 0;
+  const pt = (L, r) => { const t = (180 + L - asc) * RAD; return [C + r * Math.cos(t), C - r * Math.sin(t)]; };
+  let s = `<svg class="wheel" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Roue du thème natal">`;
+  s += `<circle class="w-ring" cx="${C}" cy="${C}" r="${R1}"/><circle class="w-ring" cx="${C}" cy="${C}" r="${R2}"/><circle class="w-ring" cx="${C}" cy="${C}" r="${R3}"/>`;
+  const elCol = { feu:'rgba(231,111,81,.10)', terre:'rgba(42,157,143,.10)', air:'rgba(255,209,102,.08)', eau:'rgba(69,123,157,.14)' };
+  for (let i = 0; i < 12; i++) {
+    const a = i * 30, [x1, y1] = pt(a, R1), [x2, y2] = pt(a + 30, R1), [x3, y3] = pt(a + 30, R2), [x4, y4] = pt(a, R2);
+    s += `<path class="w-sector" fill="${elCol[SIGNS[i].el]}" d="M${x1},${y1} A${R1},${R1} 0 0 0 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 1 ${x4},${y4} Z"/>`;
+    const [gx, gy] = pt(a + 15, (R1 + R2) / 2);
+    s += `<text class="w-sign" x="${gx}" y="${gy}">${SIGNS[i].g}</text>`;
+  }
+  if (natal.timeKnown) {
+    for (let h = 0; h < 12; h++) {
+      const [x1, y1] = pt(asc + h * 30, R2), [x2, y2] = pt(asc + h * 30, 22);
+      s += `<line class="w-hl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+      const [hx, hy] = pt(asc + h * 30 + 15, 30);
+      s += `<text class="w-house" x="${hx}" y="${hy}">${h + 1}</text>`;
+    }
+    const [ax1, ay1] = pt(asc, R1 + 2), [ax2, ay2] = pt(asc + 180, R1 + 2);
+    s += `<line class="w-axis" x1="${ax1}" y1="${ay1}" x2="${ax2}" y2="${ay2}"/>`;
+    const [mx1, my1] = pt(natal.mc, R1 + 2), [mx2, my2] = pt(natal.mc + 180, R1 + 2);
+    s += `<line class="w-axis" style="stroke-dasharray:4 3" x1="${mx1}" y1="${my1}" x2="${mx2}" y2="${my2}"/>`;
+    s += `<text class="w-lbl" x="${ax1 + 2}" y="${ay1 - 4}">AS</text>`;
+    const [lx, ly] = pt(natal.mc, R1 + 2);
+    s += `<text class="w-lbl" x="${lx + 3}" y="${ly + 10}">MC</text>`;
+  }
+  // aspects entre planètes natales
+  for (let i = 0; i < PLANETS.length; i++) for (let j = i + 1; j < PLANETS.length; j++) {
+    const a = natal.lon[PLANETS[i].k], b = natal.lon[PLANETS[j].k], f = findAspect(a, b);
+    if (!f || f.asp.n === 'conjonction') continue;
+    const col = f.asp.q > 0 ? '#7ee4b8' : '#e76f51';
+    const [x1, y1] = pt(a, R3 - 2), [x2, y2] = pt(b, R3 - 2);
+    s += `<line class="w-asp" stroke="${col}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+  }
+  // planètes avec anti-chevauchement
+  const placed = PLANETS.map(p => ({ p, L: natal.lon[p.k], r: (R2 + R3) / 2 })).sort((a, b) => a.L - b.L);
+  for (let i = 0; i < placed.length; i++) {
+    const prev = placed[i - 1];
+    if (prev && angDiff(prev.L, placed[i].L) < 8 && prev.r === placed[i].r) placed[i].r = placed[i].r - 18 < R3 - 8 ? (R2 + R3) / 2 : placed[i].r - 18;
+  }
+  for (const { p, L, r } of placed) {
+    const [tx1, ty1] = pt(L, R2), [tx2, ty2] = pt(L, R2 - 5);
+    s += `<line class="w-tick" stroke="${p.c}" x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}"/>`;
+    const [x, y] = pt(L, r - 4);
+    s += `<text class="w-pl" fill="${p.c}" x="${x}" y="${y}">${p.g}</text>`;
+  }
+  return s + '</svg>';
+}
+
+function renderTheme() {
+  const box = document.getElementById('theme');
+  const p = people.find(x => x.id === selectedId);
+  if (!p) { box.classList.add('hidden'); return; }
+  const natal = natalChart(p);
+  const rowsHTML = PLANETS.map(pl => {
+    const L = natal.lon[pl.k], sg = signOf(L);
+    return `<tr><td class="k"><span style="color:${pl.c}">${pl.g}</span> ${pl.n}${natal.retro[pl.k] ? ' <span title="rétrograde">℞</span>' : ''}</td>
+      <td>${sg.g} ${sg.n}</td><td class="deg">${fmtDeg(L)}${natal.timeKnown ? ` · M${houseOf(L, natal.asc)}` : ''}</td></tr>`;
+  }).join('') + (natal.timeKnown ? `
+      <tr><td class="k">AS Ascendant</td><td>${signOf(natal.asc).g} ${signOf(natal.asc).n}</td><td class="deg">${fmtDeg(natal.asc)}</td></tr>
+      <tr><td class="k">MC Milieu du Ciel</td><td>${signOf(natal.mc).g} ${signOf(natal.mc).n}</td><td class="deg">${fmtDeg(natal.mc)}</td></tr>` : '');
+
+  const sun = signOf(natal.lon.sun), moon = signOf(natal.lon.moon);
+  let interp = `<p><b>☉ Soleil en ${sun.n}</b> — ${P.sun.kw} prend une tonalité ${sun.t}.</p>
+    <p><b>☽ Lune en ${moon.n}</b> — ${P.moon.kw} est d'essence ${moon.t}${natal.timeKnown ? '' : ' (position approximative sans l\'heure)'}.</p>`;
+  if (natal.timeKnown) {
+    const as = signOf(natal.asc);
+    interp += `<p><b>AS Ascendant ${as.n}</b> — au premier abord, on vous perçoit comme une personne ${as.t}.</p>`;
+  }
+  const others = ['mercury','venus','mars','jupiter','saturn'].map(k => {
+    const pl = P[k], sg = signOf(natal.lon[k]);
+    const house = natal.timeKnown ? `, surtout dans le domaine ${HOUSES[houseOf(natal.lon[k], natal.asc) - 1]}` : '';
+    return `<p><b>${pl.g} ${pl.n} en ${sg.n}</b> — ${pl.kw} se montre ${sg.t}${house}.</p>`;
+  }).join('');
+
+  const elems = { feu:0, terre:0, air:0, eau:0 };
+  ['sun','moon','mercury','venus','mars','jupiter','saturn'].forEach(k => elems[signOf(natal.lon[k]).el]++);
+  const domEl = Object.entries(elems).sort((a, b) => b[1] - a[1])[0][0];
+  const elText = { feu:'l\'élan et l\'enthousiasme', terre:'le concret et la constance', air:'les idées et les échanges', eau:'la sensibilité et l\'intuition' };
+
+  const birth = new Date(natal.ms).toLocaleString('fr-FR', { timeZone: p.place.tz, dateStyle:'long', timeStyle: p.time ? 'short' : undefined });
+  box.innerHTML = `
+    <div class="bulletin-header">🪐 thème natal de ${esc(p.name)} <span class="right">${esc(birth)}${p.time ? '' : ' · heure inconnue'} · ${esc(p.place.label)}</span></div>
+    <div class="theme-grid">
+      <div>${wheelSVG(natal)}</div>
+      <div><table class="pos">${rowsHTML}</table></div>
+    </div>
+    <div class="interp">
+      <div class="sub">Les grandes lignes</div>
+      ${interp}
+      <p>Élément dominant : <b>${domEl}</b> (${elems.feu} feu · ${elems.terre} terre · ${elems.air} air · ${elems.eau} eau) — un tempérament qui privilégie ${elText[domEl]}.</p>
+      <div class="sub">Planètes personnelles et sociales</div>
+      ${others}
+    </div>`;
+  box.classList.remove('hidden');
+}
+
+function renderAll() { renderSky(); renderCards(); renderTheme(); }
+
+// ---------- Interactions ----------
+document.getElementById('day-toggle').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  period = +b.dataset.p;
+  document.querySelectorAll('.day-toggle-btn').forEach(x => x.classList.toggle('active', x === b));
+  renderSky(); renderCards();
+});
+
+document.getElementById('cards').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    e.stopPropagation();
+    const p = people.find(x => x.id === del.dataset.del);
+    if (p && confirm(`Supprimer le thème de ${p.name} ?`)) {
+      people = people.filter(x => x.id !== p.id);
+      if (selectedId === p.id) selectedId = null;
+      savePeople(); renderAll();
+    }
+    return;
+  }
+  const card = e.target.closest('.card'); if (!card) return;
+  selectedId = selectedId === card.dataset.id ? null : card.dataset.id;
+  renderCards(); renderTheme();
+  if (selectedId) document.getElementById('theme').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+document.getElementById('cards').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
+});
+
+document.getElementById('share-btn').addEventListener('click', async () => {
+  const data = { title: document.title, text: 'Qui a le ciel le plus clément aujourd\'hui ?', url: location.href };
+  try {
+    if (navigator.share) await navigator.share(data);
+    else { await navigator.clipboard.writeText(location.href); alert('Lien copié dans le presse-papiers.'); }
+  } catch (e) {}
+});
+
+// Formulaire
+const formBlock = document.getElementById('form-block');
+const fName = document.getElementById('f-name'), fDate = document.getElementById('f-date'),
+      fTime = document.getElementById('f-time'), fNoTime = document.getElementById('f-notime'),
+      fPlace = document.getElementById('f-place'), suggest = document.getElementById('suggest'), fMsg = document.getElementById('f-msg');
+let chosenPlace = null, geoTimer = null;
+
+document.getElementById('add-btn').addEventListener('click', () => {
+  formBlock.classList.toggle('hidden');
+  if (!formBlock.classList.contains('hidden')) fName.focus();
+});
+document.getElementById('f-cancel').addEventListener('click', () => formBlock.classList.add('hidden'));
+fNoTime.addEventListener('change', () => { fTime.disabled = fNoTime.checked; });
+
+fPlace.addEventListener('input', () => {
+  chosenPlace = null;
+  clearTimeout(geoTimer);
+  const q = fPlace.value.trim();
+  if (q.length < 2) { suggest.classList.add('hidden'); return; }
+  geoTimer = setTimeout(async () => {
+    try {
+      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=fr&format=json`);
+      const j = await r.json();
+      const res = (j.results || []).filter(x => x.timezone);
+      suggest.innerHTML = res.length ? res.map((x, i) => `<button type="button" data-i="${i}">${esc(x.name)}
+          <small>${esc([x.admin1, x.country].filter(Boolean).join(', '))}</small></button>`).join('')
+        : '<button type="button" disabled><small>Aucun lieu trouvé</small></button>';
+      suggest.classList.remove('hidden');
+      suggest.onclick = e => {
+        const b = e.target.closest('button[data-i]'); if (!b) return;
+        const x = res[+b.dataset.i];
+        chosenPlace = { label: [x.name, x.admin1, x.country].filter(Boolean).join(', '), lat: x.latitude, lon: x.longitude, tz: x.timezone };
+        fPlace.value = chosenPlace.label;
+        suggest.classList.add('hidden');
+      };
+    } catch (e) {
+      suggest.innerHTML = '<button type="button" disabled><small>Recherche indisponible (connexion ?)</small></button>';
+      suggest.classList.remove('hidden');
+    }
+  }, 300);
+});
+document.addEventListener('click', e => { if (!e.target.closest('.place-field')) suggest.classList.add('hidden'); });
+
+document.getElementById('f-save').addEventListener('click', () => {
+  const err = m => { fMsg.textContent = m; fMsg.className = 'form-msg err'; };
+  const name = fName.value.trim();
+  if (!name) return err('Indiquez un prénom.');
+  if (!fDate.value) return err('Indiquez la date de naissance.');
+  if (!fNoTime.checked && !fTime.value) return err('Indiquez l\'heure ou cochez « heure inconnue ».');
+  if (!chosenPlace) return err('Choisissez le lieu dans la liste proposée.');
+  const p = { id: 'p' + Date.now().toString(36), name, date: fDate.value, time: fNoTime.checked ? null : fTime.value, place: chosenPlace };
+  people = people.filter(x => x.id !== 'demo');
+  people.push(p);
+  savePeople();
+  selectedId = p.id;
+  fName.value = ''; fPlace.value = ''; chosenPlace = null; fMsg.textContent = '';
+  formBlock.classList.add('hidden');
+  renderAll();
+  document.getElementById('theme').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+
+renderAll();
+</script>
+</body>
+</html>
