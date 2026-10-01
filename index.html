@@ -203,8 +203,8 @@
     <div class="bulletin-header" data-i18n="formHead"></div>
     <div class="form">
       <div class="field"><label for="f-name" data-i18n="fName"></label><input type="text" id="f-name" maxlength="30" placeholder="Marine"></div>
-      <div class="field"><label for="f-date" data-i18n="fDate"></label><input type="date" id="f-date" min="1900-01-01" max="2100-12-31"></div>
-      <div class="field"><label for="f-time" data-i18n="fTime"></label><input type="time" id="f-time" value="12:00">
+      <div class="field"><label for="f-date" data-i18n="fDate"></label><input type="text" id="f-date" inputmode="numeric" autocomplete="off" maxlength="10" data-i18n-ph="fDatePh"></div>
+      <div class="field"><label for="f-time" data-i18n="fTime"></label><input type="text" id="f-time" inputmode="numeric" autocomplete="off" maxlength="5" data-i18n-ph="fTimePh">
         <label class="check"><input type="checkbox" id="f-notime"> <span data-i18n="fNoTime"></span></label></div>
       <div class="field place-field"><label for="f-place" data-i18n="fPlace"></label>
         <input type="text" id="f-place" data-i18n-ph="fPlacePh" autocomplete="off">
@@ -368,7 +368,9 @@ const T = {
     shareText: "Qui a le ciel le plus clément aujourd'hui ?", copied: 'Lien copié dans le presse-papiers.',
     formHead: '✨ nouveau thème natal', fName: 'Prénom', fDate: 'Date de naissance', fTime: 'Heure (locale)',
     fNoTime: 'heure inconnue', fPlace: 'Lieu de naissance', fPlacePh: 'Ville…', fSave: 'Calculer et ajouter', fCancel: 'Annuler',
-    errName: 'Indiquez un prénom.', errDate: 'Indiquez la date de naissance.',
+    fDatePh: 'JJ/MM/AAAA', fTimePh: 'HH:MM',
+    errName: 'Indiquez un prénom.', errDate: 'Date invalide : tapez JJ/MM/AAAA, par exemple 14/07/1985.',
+    errTimeBad: 'Heure invalide : tapez HH:MM, par exemple 08:30.',
     errTime: "Indiquez l'heure ou cochez « heure inconnue ».", errPlace: 'Choisissez le lieu dans la liste proposée.',
     noPlace: 'Aucun lieu trouvé', offline: 'Recherche indisponible (connexion ?)',
     hint: 'Touchez une carte pour afficher le thème natal complet de la personne.',
@@ -480,7 +482,9 @@ const T = {
     shareText: 'Whose sky is kindest today?', copied: 'Link copied to the clipboard.',
     formHead: '✨ new birth chart', fName: 'First name', fDate: 'Date of birth', fTime: 'Time (local)',
     fNoTime: 'time unknown', fPlace: 'Place of birth', fPlacePh: 'City…', fSave: 'Calculate and add', fCancel: 'Cancel',
-    errName: 'Enter a first name.', errDate: 'Enter the date of birth.',
+    fDatePh: 'DD/MM/YYYY', fTimePh: 'HH:MM',
+    errName: 'Enter a first name.', errDate: 'Invalid date: type DD/MM/YYYY, e.g. 14/07/1985.',
+    errTimeBad: 'Invalid time: type HH:MM, e.g. 08:30.',
     errTime: 'Enter the time or tick “time unknown”.', errPlace: 'Pick the place from the suggestions.',
     noPlace: 'No place found', offline: 'Search unavailable (offline?)',
     hint: "Tap a card to show that person's full birth chart.",
@@ -944,6 +948,45 @@ document.getElementById('add-btn').addEventListener('click', () => {
 document.getElementById('f-cancel').addEventListener('click', () => formBlock.classList.add('hidden'));
 fNoTime.addEventListener('change', () => { fTime.disabled = fNoTime.checked; });
 
+// Saisie au clavier : 14071985 → 14/07/1985, 0830 → 08:30
+function autoFormat(input, groups, sep) {
+  input.addEventListener('input', e => {
+    if (e.inputType && e.inputType.startsWith('delete')) return;
+    const d = input.value.replace(/\D/g, '');
+    let out = '', i = 0;
+    for (let g = 0; g < groups.length && i < d.length; g++) {
+      const part = d.slice(i, i + groups[g]);
+      out += part; i += part.length;
+      if (part.length === groups[g] && g < groups.length - 1) out += sep;
+    }
+    input.value = out;
+  });
+}
+autoFormat(fDate, [2, 2, 4], '/');
+autoFormat(fTime, [2, 2], ':');
+
+function parseDate(str) {
+  const m = str.trim().match(/^(\d{1,2})\D+(\d{1,2})\D+(\d{4})$/) || str.replace(/\D/g, '').match(/^(\d{2})(\d{2})(\d{4})$/);
+  if (!m) return null;
+  const d = +m[1], mo = +m[2], y = +m[3];
+  if (y < 1900 || y > 2100) return null;
+  const t = new Date(Date.UTC(y, mo - 1, d));
+  if (t.getUTCFullYear() !== y || t.getUTCMonth() !== mo - 1 || t.getUTCDate() !== d) return null;
+  return `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+function parseTime(str) {
+  let h, mi;
+  const m = str.trim().match(/^(\d{1,2})\s*[:h.]\s*(\d{0,2})$/i);
+  if (m) { h = +m[1]; mi = m[2] ? +m[2] : 0; }
+  else {
+    const d = str.replace(/\D/g, '');
+    if (d.length < 1 || d.length > 4) return null;
+    if (d.length <= 2) { h = +d; mi = 0; } else { h = +d.slice(0, d.length - 2); mi = +d.slice(-2); }
+  }
+  if (h > 23 || mi > 59) return null;
+  return `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}`;
+}
+
 fPlace.addEventListener('input', () => {
   chosenPlace = null;
   clearTimeout(geoTimer);
@@ -977,15 +1020,21 @@ document.getElementById('f-save').addEventListener('click', () => {
   const err = m => { fMsg.textContent = m; fMsg.className = 'form-msg err'; };
   const name = fName.value.trim();
   if (!name) return err(L.errName);
-  if (!fDate.value) return err(L.errDate);
-  if (!fNoTime.checked && !fTime.value) return err(L.errTime);
+  const iso = parseDate(fDate.value);
+  if (!iso) return err(L.errDate);
+  let hhmm = null;
+  if (!fNoTime.checked) {
+    if (!fTime.value.trim()) return err(L.errTime);
+    hhmm = parseTime(fTime.value);
+    if (!hhmm) return err(L.errTimeBad);
+  }
   if (!chosenPlace) return err(L.errPlace);
-  const p = { id: 'p' + Date.now().toString(36), name, date: fDate.value, time: fNoTime.checked ? null : fTime.value, place: chosenPlace };
+  const p = { id: 'p' + Date.now().toString(36), name, date: iso, time: hhmm, place: chosenPlace };
   people = people.filter(x => x.id !== 'demo');
   people.push(p);
   savePeople();
   selectedId = p.id;
-  fName.value = ''; fPlace.value = ''; chosenPlace = null; fMsg.textContent = '';
+  fName.value = ''; fDate.value = ''; fTime.value = ''; fPlace.value = ''; chosenPlace = null; fMsg.textContent = '';
   formBlock.classList.add('hidden');
   renderAll();
   document.getElementById('theme').scrollIntoView({ behavior:'smooth', block:'start' });
