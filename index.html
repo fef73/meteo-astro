@@ -149,6 +149,15 @@
   .features-panel ul{margin:0;padding-left:20px;font-size:13.5px;line-height:1.7;}
   .features-panel li{margin-bottom:4px;}
   .features-panel .f-dim{color:var(--text-lo);}
+  .js-tooltip{position:fixed;z-index:9999;max-width:270px;background:var(--bg-card);border:1px solid var(--hairline);color:var(--text-hi);
+    font:12px/1.5 'Space Grotesk',sans-serif;padding:8px 11px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none;}
+  .js-tooltip b{font-weight:600;}
+  .js-tooltip .tip-lo{color:var(--text-lo);font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  [data-tip]{cursor:help;}
+  .wheel [data-tip]:hover{filter:brightness(1.35);}
+  .w-hit{fill:transparent;stroke:transparent;}
+  .w-hitline{stroke:transparent;stroke-width:9;}
+  table.pos tr[data-tip]:hover td{background:rgba(126,228,184,.05);}
 
   .switches-row{display:flex;gap:8px;justify-content:flex-end;}
   .lang-switch{display:inline-flex;background:var(--bg-card);border:1px solid var(--hairline);border-radius:999px;padding:3px;gap:2px;}
@@ -412,6 +421,15 @@ const T = {
       'du couple et des associations', 'des transformations et des ressources partagées', 'des voyages et de la quête de sens',
       "de la carrière et de l'image publique", 'des amitiés et des projets', "de l'intériorité et du lâcher-prise"],
     demoName: 'Exemple',
+    tipPlanet: (pl, sg, deg, house, retro) => `<b>${pl.g} ${pl.n}</b> en ${sg.n} <span class="tip-lo">${deg}${house ? ' · maison ' + house : ''}</span><br>${cap(pl.kw)}.` +
+      (house ? `<br><span class="tip-lo">Se joue surtout dans le domaine ${L.houses[house - 1]}.</span>` : '') + (retro ? `<br><span class="tip-lo">℞ Rétrograde à la naissance : énergie plus intériorisée.</span>` : ''),
+    tipSign: (sg, el) => `<b>${sg.g} ${sg.n}</b> <span class="tip-lo">· signe ${el}</span><br>${cap(sg.t)}.`,
+    tipHouse: h => `<b>Maison ${h}</b><br>Le domaine ${L.houses[h - 1]}.`,
+    tipAsc: (sg, deg) => `<b>Ascendant</b> en ${sg.n} <span class="tip-lo">${deg}</span><br>Le signe qui se levait à l'est à la naissance : votre façon d'aborder le monde.`,
+    tipMc: (sg, deg) => `<b>Milieu du Ciel</b> en ${sg.n} <span class="tip-lo">${deg}</span><br>Le point le plus haut du ciel : vocation et image publique.`,
+    tipAsp: { sextile: 'Opportunité : un soutien facile à saisir.', carre: 'Tension : un défi qui pousse à agir.', trigone: 'Harmonie : ces deux énergies coopèrent naturellement.', opposition: 'Polarité : deux besoins à équilibrer.' },
+    tipScore: (d, v) => `<b>${d}</b> : ${v}/100`,
+    tipGlobal: 'Moyenne des trois domaines, d\'après les aspects entre le ciel du jour et le thème natal.',
     featTitle: '✨ Fonctionnalités du site',
     featBody: `
       <h3>Météo astrale</h3>
@@ -428,6 +446,7 @@ const T = {
         <li><b>Tableau des positions</b> du Soleil à Neptune : signe, degré, maison et rétrogradation (℞).</li>
         <li><b>Interprétation</b> : Soleil, Lune, Ascendant, planètes personnelles et sociales, élément dominant.</li>
         <li><b>Heure inconnue</b> acceptée : l'Ascendant et les maisons sont alors masqués.</li>
+        <li><b>Info-bulles au survol</b> (ou au toucher) : planètes, signes, maisons, aspects, Ascendant, Milieu du Ciel et notes.</li>
       </ul>
       <h3>Ajout et gestion</h3>
       <ul>
@@ -514,6 +533,15 @@ const T = {
       'partnerships', 'transformation and shared resources', 'travel and the search for meaning',
       'career and public image', 'friendships and projects', 'inner life and letting go'],
     demoName: 'Example',
+    tipPlanet: (pl, sg, deg, house, retro) => `<b>${pl.g} ${pl.n}</b> in ${sg.n} <span class="tip-lo">${deg}${house ? ' · house ' + house : ''}</span><br>${cap(pl.kw)}.` +
+      (house ? `<br><span class="tip-lo">Plays out mostly in matters of ${L.houses[house - 1]}.</span>` : '') + (retro ? `<br><span class="tip-lo">℞ Retrograde at birth: a more inward energy.</span>` : ''),
+    tipSign: (sg, el) => `<b>${sg.g} ${sg.n}</b> <span class="tip-lo">· ${el} sign</span><br>${cap(sg.t)}.`,
+    tipHouse: h => `<b>House ${h}</b><br>The area of ${L.houses[h - 1]}.`,
+    tipAsc: (sg, deg) => `<b>Ascendant</b> in ${sg.n} <span class="tip-lo">${deg}</span><br>The sign rising in the east at birth: how you approach the world.`,
+    tipMc: (sg, deg) => `<b>Midheaven</b> in ${sg.n} <span class="tip-lo">${deg}</span><br>The highest point of the sky: calling and public image.`,
+    tipAsp: { sextile: 'Opportunity: support that is easy to use.', carre: 'Tension: a challenge that pushes you to act.', trigone: 'Harmony: these two energies work together naturally.', opposition: 'Polarity: two needs to balance.' },
+    tipScore: (d, v) => `<b>${d}</b>: ${v}/100`,
+    tipGlobal: "Average of the three areas, based on aspects between today's sky and the birth chart.",
     featTitle: '✨ Site features',
     featBody: `
       <h3>Astro weather</h3>
@@ -530,6 +558,7 @@ const T = {
         <li><b>Position table</b> from the Sun to Neptune: sign, degree, house and retrograde (℞).</li>
         <li><b>Interpretation</b>: Sun, Moon, Ascendant, personal and social planets, dominant element.</li>
         <li><b>Unknown birth time</b> supported: the Ascendant and houses are then hidden.</li>
+        <li><b>Hover tooltips</b> (or tap): planets, signs, houses, aspects, Ascendant, Midheaven and scores.</li>
       </ul>
       <h3>Adding and managing</h3>
       <ul>
@@ -737,15 +766,20 @@ function renderCards() {
       <button class="card-del" data-del="${esc(p.id)}" title="${L.del}">✕</button>
       <div class="card-top"><div class="avatar">${sun.g}</div>
         <div><div class="card-names">${esc(nameOf(p))}</div><div class="card-city">${esc(p.place.label.split(',')[0])} · ${birth}</div></div></div>
-      <div class="card-score">${fc.scores.global}<span> /100</span></div>
+      <div class="card-score" data-tip="${esc(L.tipGlobal)}" style="display:inline-block">${fc.scores.global}<span> /100</span></div>
       <div class="card-signs">☉ <b>${sun.n}</b> · ☽ <b>${moon.n}</b>${asc ? ` · AS <b>${asc.n}</b>` : ''}</div>
-      <div class="horo">${Object.keys(DOMAINS).map(k => `<span class="horo-k">${L.domains[k]}</span><span class="stars">${stars(fc.scores[k])}</span>`).join('')}</div>
+      <div class="horo">${Object.keys(DOMAINS).map(k => `<span class="horo-k">${L.domains[k]}</span><span class="stars" data-tip="${esc(L.tipScore(L.domains[k], fc.scores[k]))}">${stars(fc.scores[k])}</span>`).join('')}</div>
       <div class="card-text">${lines}${week}</div>
       <div class="card-foot">${L.see}</div>
     </div>`;
   }).join('');
   document.getElementById('updated-at').textContent =
     L.computed + new Date().toLocaleString(L.locale, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function planetTip(natal, pl) {
+  const Lo = natal.lon[pl.k];
+  return L.tipPlanet(pl, signOf(Lo), fmtDeg(Lo), natal.timeKnown ? houseOf(Lo, natal.asc) : 0, natal.retro[pl.k]);
 }
 
 function wheelSVG(natal) {
@@ -757,31 +791,35 @@ function wheelSVG(natal) {
   const elCol = { feu:'rgba(231,111,81,.10)', terre:'rgba(42,157,143,.10)', air:'rgba(255,209,102,.08)', eau:'rgba(69,123,157,.14)' };
   for (let i = 0; i < 12; i++) {
     const a = i * 30, [x1, y1] = pt(a, R1), [x2, y2] = pt(a + 30, R1), [x3, y3] = pt(a + 30, R2), [x4, y4] = pt(a, R2);
-    s += `<path class="w-sector" fill="${elCol[SIGNS[i].el]}" d="M${x1},${y1} A${R1},${R1} 0 0 0 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 1 ${x4},${y4} Z"/>`;
+    s += `<path class="w-sector" data-tip="${esc(L.tipSign(SIGNS[i], L.elements[SIGNS[i].el]))}" fill="${elCol[SIGNS[i].el]}" d="M${x1},${y1} A${R1},${R1} 0 0 0 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 1 ${x4},${y4} Z"/>`;
     const [gx, gy] = pt(a + 15, (R1 + R2) / 2);
-    s += `<text class="w-sign" x="${gx}" y="${gy}">${SIGNS[i].g}</text>`;
+    s += `<text class="w-sign" style="pointer-events:none" x="${gx}" y="${gy}">${SIGNS[i].g}</text>`;
   }
   if (natal.timeKnown) {
     for (let h = 0; h < 12; h++) {
       const [x1, y1] = pt(asc + h * 30, R2), [x2, y2] = pt(asc + h * 30, 22);
       s += `<line class="w-hl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
       const [hx, hy] = pt(asc + h * 30 + 15, 30);
-      s += `<text class="w-house" x="${hx}" y="${hy}">${h + 1}</text>`;
+      s += `<g data-tip="${esc(L.tipHouse(h + 1))}"><circle class="w-hit" cx="${hx}" cy="${hy}" r="7"/><text class="w-house" x="${hx}" y="${hy}">${h + 1}</text></g>`;
     }
     const [ax1, ay1] = pt(asc, R1 + 2), [ax2, ay2] = pt(asc + 180, R1 + 2);
-    s += `<line class="w-axis" x1="${ax1}" y1="${ay1}" x2="${ax2}" y2="${ay2}"/>`;
+    const tipA = esc(L.tipAsc(signOf(asc), fmtDeg(asc))), tipM = esc(L.tipMc(signOf(natal.mc), fmtDeg(natal.mc)));
+    s += `<g data-tip="${tipA}"><line class="w-axis" x1="${ax1}" y1="${ay1}" x2="${ax2}" y2="${ay2}"/><line class="w-hitline" x1="${ax1}" y1="${ay1}" x2="${ax2}" y2="${ay2}"/></g>`;
     const [mx1, my1] = pt(natal.mc, R1 + 2), [mx2, my2] = pt(natal.mc + 180, R1 + 2);
-    s += `<line class="w-axis" style="stroke-dasharray:4 3" x1="${mx1}" y1="${my1}" x2="${mx2}" y2="${my2}"/>`;
-    s += `<text class="w-lbl" x="${ax1 + 2}" y="${ay1 - 4}">AS</text>`;
+    s += `<g data-tip="${tipM}"><line class="w-axis" style="stroke-dasharray:4 3" x1="${mx1}" y1="${my1}" x2="${mx2}" y2="${my2}"/><line class="w-hitline" x1="${mx1}" y1="${my1}" x2="${mx2}" y2="${my2}"/></g>`;
+    s += `<text class="w-lbl" data-tip="${tipA}" x="${ax1 + 2}" y="${ay1 - 4}">AS</text>`;
     const [lx, ly] = pt(natal.mc, R1 + 2);
-    s += `<text class="w-lbl" x="${lx + 3}" y="${ly + 10}">MC</text>`;
+    s += `<text class="w-lbl" data-tip="${tipM}" x="${lx + 3}" y="${ly + 10}">MC</text>`;
   }
   for (let i = 0; i < PLANETS.length; i++) for (let j = i + 1; j < PLANETS.length; j++) {
     const a = natal.lon[PLANETS[i].k], b = natal.lon[PLANETS[j].k], f = findAspect(a, b);
     if (!f || f.asp.k === 'conjonction') continue;
     const col = f.asp.q > 0 ? '#7ee4b8' : '#e76f51';
     const [x1, y1] = pt(a, R3 - 2), [x2, y2] = pt(b, R3 - 2);
-    s += `<line class="w-asp" stroke="${col}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+    const A = PLANETS[i], B = PLANETS[j];
+    const orb = lang === 'fr' ? f.delta.toFixed(1).replace('.', ',') : f.delta.toFixed(1);
+    const tip = esc(`<b>${A.g} ${A.n} ${f.asp.g} ${B.n} ${B.g}</b> <span class="tip-lo">· ${L.aspNames[f.asp.k]}, ${L.orb} ${orb}°</span><br>${L.tipAsp[f.asp.k]}`);
+    s += `<g data-tip="${tip}"><line class="w-asp" stroke="${col}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><line class="w-hitline" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/></g>`;
   }
   const placed = PLANETS.map(p => ({ p, Lo: natal.lon[p.k], r: (R2 + R3) / 2 })).sort((a, b) => a.Lo - b.Lo);
   for (let i = 0; i < placed.length; i++) {
@@ -792,7 +830,7 @@ function wheelSVG(natal) {
     const [tx1, ty1] = pt(Lo, R2), [tx2, ty2] = pt(Lo, R2 - 5);
     s += `<line class="w-tick" stroke="${p.c}" x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}"/>`;
     const [x, y] = pt(Lo, r - 4);
-    s += `<text class="w-pl" fill="${p.c}" x="${x}" y="${y}">${p.g}</text>`;
+    s += `<g data-tip="${esc(planetTip(natal, p))}"><circle class="w-hit" cx="${x}" cy="${y}" r="11"/><text class="w-pl" fill="${p.c}" x="${x}" y="${y}">${p.g}</text></g>`;
   }
   return s + '</svg>';
 }
@@ -804,11 +842,11 @@ function renderTheme() {
   const natal = natalChart(p);
   const rowsHTML = PLANETS.map(pl => {
     const Lo = natal.lon[pl.k], sg = signOf(Lo);
-    return `<tr><td class="k"><span style="color:${pl.c}">${pl.g}</span> ${pl.n}${natal.retro[pl.k] ? ` <span title="${L.retroTitle}">℞</span>` : ''}</td>
+    return `<tr data-tip="${esc(planetTip(natal, pl))}"><td class="k"><span style="color:${pl.c}">${pl.g}</span> ${pl.n}${natal.retro[pl.k] ? ` <span title="${L.retroTitle}">℞</span>` : ''}</td>
       <td>${sg.g} ${sg.n}</td><td class="deg">${fmtDeg(Lo)}${natal.timeKnown ? ` · ${L.houseAbbr}${houseOf(Lo, natal.asc)}` : ''}</td></tr>`;
   }).join('') + (natal.timeKnown ? `
-      <tr><td class="k">AS ${L.ascLbl}</td><td>${signOf(natal.asc).g} ${signOf(natal.asc).n}</td><td class="deg">${fmtDeg(natal.asc)}</td></tr>
-      <tr><td class="k">MC ${L.mcLbl}</td><td>${signOf(natal.mc).g} ${signOf(natal.mc).n}</td><td class="deg">${fmtDeg(natal.mc)}</td></tr>` : '');
+      <tr data-tip="${esc(L.tipAsc(signOf(natal.asc), fmtDeg(natal.asc)))}"><td class="k">AS ${L.ascLbl}</td><td>${signOf(natal.asc).g} ${signOf(natal.asc).n}</td><td class="deg">${fmtDeg(natal.asc)}</td></tr>
+      <tr data-tip="${esc(L.tipMc(signOf(natal.mc), fmtDeg(natal.mc)))}"><td class="k">MC ${L.mcLbl}</td><td>${signOf(natal.mc).g} ${signOf(natal.mc).n}</td><td class="deg">${fmtDeg(natal.mc)}</td></tr>` : '');
 
   const sun = signOf(natal.lon.sun), moon = signOf(natal.lon.moon);
   let interp = `<p><b>☉ ${L.inSign(P.sun.n, sun.n)}</b> — ${L.iSun(sun, P.sun.kw)}</p>
@@ -952,6 +990,31 @@ document.getElementById('f-save').addEventListener('click', () => {
   renderAll();
   document.getElementById('theme').scrollIntoView({ behavior:'smooth', block:'start' });
 });
+
+// Info-bulles
+const tipEl = document.createElement('div');
+tipEl.className = 'js-tooltip hidden';
+document.body.appendChild(tipEl);
+function placeTip(x, y) {
+  const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  let left = x + 14, top = y + 16;
+  if (left + w > innerWidth - 8) left = Math.max(8, x - w - 14);
+  if (top + h > innerHeight - 8) top = Math.max(8, y - h - 14);
+  tipEl.style.left = left + 'px'; tipEl.style.top = top + 'px';
+}
+document.addEventListener('pointerover', e => {
+  const t = e.target.closest && e.target.closest('[data-tip]');
+  if (!t) return;
+  tipEl.innerHTML = t.dataset.tip;
+  tipEl.classList.remove('hidden');
+  placeTip(e.clientX, e.clientY);
+});
+document.addEventListener('pointermove', e => { if (!tipEl.classList.contains('hidden')) placeTip(e.clientX, e.clientY); });
+document.addEventListener('pointerout', e => {
+  const to = e.relatedTarget;
+  if (!to || !to.closest || !to.closest('[data-tip]')) tipEl.classList.add('hidden');
+});
+addEventListener('scroll', () => tipEl.classList.add('hidden'), { passive: true });
 
 renderAll();
 </script>
