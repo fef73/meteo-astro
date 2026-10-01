@@ -149,6 +149,14 @@
   .features-panel ul{margin:0;padding-left:20px;font-size:13.5px;line-height:1.7;}
   .features-panel li{margin-bottom:4px;}
   .features-panel .f-dim{color:var(--text-lo);}
+
+  .switches-row{display:flex;gap:8px;justify-content:flex-end;}
+  .lang-switch{display:inline-flex;background:var(--bg-card);border:1px solid var(--hairline);border-radius:999px;padding:3px;gap:2px;}
+  .lang-switch button{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;background:transparent;color:var(--text-lo);
+    border:none;border-radius:999px;padding:6px 15px;cursor:pointer;transition:background .15s,color .15s;}
+  .lang-switch button:hover{color:var(--text-hi);}
+  .lang-switch button.active{background:var(--live);color:#0b1622;}
+  @media (max-width:640px){.switches-row{justify-content:flex-start;}}
 </style>
 </head>
 <body>
@@ -156,40 +164,46 @@
 
   <header>
     <div>
-      <div class="eyebrow"><span class="pulse"></span> éphémérides calculées en direct</div>
-      <h1>Qui a le ciel le plus clément ?</h1>
-      <div class="subtitle" id="subtitle">Météo astrale des proches, d'après leur thème natal et le ciel du jour.</div>
+      <div class="eyebrow"><span class="pulse"></span> <span data-i18n="eyebrow"></span></div>
+      <h1 data-i18n="title"></h1>
+      <div class="subtitle" id="subtitle"></div>
       <div class="day-toggle" id="day-toggle">
-        <button class="day-toggle-btn active" data-p="0">Aujourd'hui</button>
-        <button class="day-toggle-btn" data-p="1">Demain</button>
-        <button class="day-toggle-btn" data-p="2">Après-demain</button>
-        <button class="day-toggle-btn" data-p="7">7 jours</button>
+        <button class="day-toggle-btn active" data-p="0"></button>
+        <button class="day-toggle-btn" data-p="1"></button>
+        <button class="day-toggle-btn" data-p="2"></button>
+        <button class="day-toggle-btn" data-p="7"></button>
       </div>
     </div>
     <div class="meta">
+      <div class="switches-row">
+        <div class="lang-switch" id="lang-switch">
+          <button data-lang="fr">FR</button>
+          <button data-lang="en">EN</button>
+        </div>
+      </div>
       <div id="updated-at">—</div>
       <div class="meta-buttons">
-        <button class="btn btn-live" id="add-btn">＋ Ajouter un thème</button>
-        <button class="btn" id="share-btn">📤 Partager</button>
+        <button class="btn btn-live" id="add-btn" data-i18n="add"></button>
+        <button class="btn" id="share-btn" data-i18n="share"></button>
       </div>
     </div>
   </header>
 
   <!-- Formulaire d'ajout -->
   <div class="bulletin hidden" id="form-block" style="margin-top:0;margin-bottom:22px;">
-    <div class="bulletin-header">✨ nouveau thème natal</div>
+    <div class="bulletin-header" data-i18n="formHead"></div>
     <div class="form">
-      <div class="field"><label for="f-name">Prénom</label><input type="text" id="f-name" maxlength="30" placeholder="Marine"></div>
-      <div class="field"><label for="f-date">Date de naissance</label><input type="date" id="f-date" min="1900-01-01" max="2100-12-31"></div>
-      <div class="field"><label for="f-time">Heure (locale)</label><input type="time" id="f-time" value="12:00">
-        <label class="check"><input type="checkbox" id="f-notime"> heure inconnue</label></div>
-      <div class="field place-field"><label for="f-place">Lieu de naissance</label>
-        <input type="text" id="f-place" placeholder="Ville…" autocomplete="off">
+      <div class="field"><label for="f-name" data-i18n="fName"></label><input type="text" id="f-name" maxlength="30" placeholder="Marine"></div>
+      <div class="field"><label for="f-date" data-i18n="fDate"></label><input type="date" id="f-date" min="1900-01-01" max="2100-12-31"></div>
+      <div class="field"><label for="f-time" data-i18n="fTime"></label><input type="time" id="f-time" value="12:00">
+        <label class="check"><input type="checkbox" id="f-notime"> <span data-i18n="fNoTime"></span></label></div>
+      <div class="field place-field"><label for="f-place" data-i18n="fPlace"></label>
+        <input type="text" id="f-place" data-i18n-ph="fPlacePh" autocomplete="off">
         <div class="suggest hidden" id="suggest"></div></div>
     </div>
     <div class="form-actions">
-      <button class="btn btn-live" id="f-save">Calculer et ajouter</button>
-      <button class="btn" id="f-cancel">Annuler</button>
+      <button class="btn btn-live" id="f-save" data-i18n="fSave"></button>
+      <button class="btn" id="f-cancel" data-i18n="fCancel"></button>
       <span class="form-msg" id="f-msg"></span>
     </div>
   </div>
@@ -199,7 +213,7 @@
 
   <div class="cards" id="cards"></div>
 
-  <div class="hint-box"><span>💡</span><span>Touchez une carte pour afficher le thème natal complet de la personne.</span></div>
+  <div class="hint-box"><span>💡</span><span data-i18n="hint"></span></div>
 
   <!-- Thème natal détaillé -->
   <div class="bulletin hidden" id="theme"></div>
@@ -207,45 +221,15 @@
   <!-- Fonctionnalités du site -->
   <div class="features-panel">
     <details>
-      <summary>✨ Fonctionnalités du site</summary>
-      <div class="features-body">
-        <h3>Météo astrale</h3>
-        <ul>
-          <li><b>Bulletin cosmique</b> : signes du Soleil et de la Lune, phase lunaire avec pourcentage d'illumination, aspect planétaire le plus serré du jour et planètes rétrogrades.</li>
-          <li><b>Une carte par proche</b> : note globale sur 100 et étoiles pour l'amour, le travail et l'énergie, calculées d'après les transits du jour sur le thème natal.</li>
-          <li><b>Deux phrases explicatives</b> par carte, tirées des aspects les plus marquants du moment.</li>
-          <li><b>Classement</b> 🥇🥈🥉 des proches selon leur ciel du jour.</li>
-          <li><b>Périodes</b> : aujourd'hui, demain, après-demain ou 7 jours (moyenne, avec le meilleur jour et le plus délicat).</li>
-        </ul>
-        <h3>Thème natal</h3>
-        <ul>
-          <li><b>Roue du thème</b> : signes colorés par élément, maisons, Ascendant (AS), Milieu du Ciel (MC) et aspects entre planètes (vert harmonieux, rouge tendu).</li>
-          <li><b>Tableau des positions</b> du Soleil à Neptune : signe, degré, maison et rétrogradation (℞).</li>
-          <li><b>Interprétation</b> : Soleil, Lune, Ascendant, planètes personnelles et sociales, élément dominant.</li>
-          <li><b>Heure inconnue</b> acceptée : l'Ascendant et les maisons sont alors masqués.</li>
-        </ul>
-        <h3>Ajout et gestion</h3>
-        <ul>
-          <li><b>＋ Ajouter un thème</b> : prénom, date, heure et lieu de naissance, avec recherche de ville.</li>
-          <li><b>Heure d'été historique</b> prise en compte grâce au fuseau horaire du lieu.</li>
-          <li><b>Suppression</b> d'un thème avec la croix ✕ de sa carte.</li>
-          <li><b>📤 Partager</b> le lien du site.</li>
-        </ul>
-        <h3>Sous le capot</h3>
-        <ul>
-          <li>Positions planétaires calculées <b>dans le navigateur</b>, sans serveur ni clé API (écart inférieur à 0,05° avec les éphémérides de référence).</li>
-          <li class="f-dim">Thèmes enregistrés uniquement sur cet appareil : rien n'est envoyé en ligne. Contenu à visée ludique.</li>
-        </ul>
-      </div>
+      <summary data-i18n="featTitle"></summary>
+      <div class="features-body" data-i18n-html="featBody"></div>
     </details>
   </div>
 
   <footer>
-    Positions planétaires calculées localement (éléments orbitaux de P. Schlyter, précision de quelques minutes d'arc) · maisons égales<br>
-    Lieux et fuseaux horaires : géocodage Open-Meteo.com · Thèmes enregistrés uniquement dans ce navigateur<br>
-    Contenu à visée ludique — l'astrologie n'a pas de valeur prédictive démontrée<br>
-    <div style="margin-top:14px;">Créé par fef73 avec claude.ai</div>
-    <a class="contact" href="https://forms.gle/EMZtxMBJCUE6HJXp8" target="_blank" rel="noopener">✉️ Contact / suggestion</a>
+    <span data-i18n-html="footer"></span>
+    <div style="margin-top:14px;" data-i18n="signature"></div>
+    <a class="contact" href="https://forms.gle/EMZtxMBJCUE6HJXp8" target="_blank" rel="noopener" data-i18n="contact"></a>
   </footer>
 </div>
 
@@ -360,72 +344,266 @@ function localToUTC(dateStr, timeStr, tz) {
 }
 // ==/CORE==
 
-// ---------- Données d'interprétation ----------
-const SIGNS = [
-  ['Bélier','♈','feu','directe, ardente et pionnière'],
-  ['Taureau','♉','terre','stable, sensuelle et persévérante'],
-  ['Gémeaux','♊','air','curieuse, vive et communicative'],
-  ['Cancer','♋','eau','sensible, protectrice et tournée vers les siens'],
-  ['Lion','♌','feu','généreuse, rayonnante et fière'],
-  ['Vierge','♍','terre','précise, serviable et analytique'],
-  ['Balance','♎','air','diplomate, élégante et éprise d\'harmonie'],
-  ['Scorpion','♏','eau','intense, magnétique et passionnée'],
-  ['Sagittaire','♐','feu','optimiste, aventureuse et éprise de liberté'],
-  ['Capricorne','♑','terre','ambitieuse, patiente et responsable'],
-  ['Verseau','♒','air','indépendante, originale et humaniste'],
-  ['Poissons','♓','eau','intuitive, rêveuse et compatissante']
-].map(([n, g, el, t]) => ({ n, g: g + '\uFE0E', el, t }));
+// ---------- Traductions ----------
+const T = {
+  fr: {
+    locale: 'fr-FR', docTitle: 'Ciel des proches',
+    eyebrow: 'éphémérides calculées en direct',
+    title: 'Qui a le ciel le plus clément ?',
+    periods: { 0: "Aujourd'hui", 1: 'Demain', 2: 'Après-demain', 7: '7 jours' },
+    periodLbl: { 0: "aujourd'hui", 1: 'demain', 2: 'après-demain', 7: 'sur 7 jours' },
+    subtitle: (per, names) => `Météo astrale ${per} de ${names}, d'après leur thème natal.`,
+    subtitleEmpty: 'Ajoutez un premier thème natal pour commencer.',
+    and: ' et ',
+    add: '＋ Ajouter un thème', share: '📤 Partager', computed: 'calculé le ',
+    shareText: "Qui a le ciel le plus clément aujourd'hui ?", copied: 'Lien copié dans le presse-papiers.',
+    formHead: '✨ nouveau thème natal', fName: 'Prénom', fDate: 'Date de naissance', fTime: 'Heure (locale)',
+    fNoTime: 'heure inconnue', fPlace: 'Lieu de naissance', fPlacePh: 'Ville…', fSave: 'Calculer et ajouter', fCancel: 'Annuler',
+    errName: 'Indiquez un prénom.', errDate: 'Indiquez la date de naissance.',
+    errTime: "Indiquez l'heure ou cochez « heure inconnue ».", errPlace: 'Choisissez le lieu dans la liste proposée.',
+    noPlace: 'Aucun lieu trouvé', offline: 'Recherche indisponible (connexion ?)',
+    hint: 'Touchez une carte pour afficher le thème natal complet de la personne.',
+    skyHead: '🔭 bulletin cosmique', from: 'à partir du ',
+    skySummary: (sun, moon, retro) => `Le Soleil traverse ${sun.art} <b>${sun.n}</b> ${sun.g} et la Lune est en <b>${moon.n}</b> ${moon.g}. ` +
+      (retro.length ? `En rétrogradation : ${retro.join(', ')}.` : 'Aucune planète rétrograde.'),
+    phaseLbl: 'Phase lunaire', tightLbl: 'Aspect le plus serré', retroLbl: 'Rétrogrades', none: 'aucune', orb: 'orbe',
+    phases: ['Nouvelle lune', 'Premier croissant', 'Premier quartier', 'Gibbeuse croissante', 'Pleine lune', 'Gibbeuse décroissante', 'Dernier quartier', 'Dernier croissant'],
+    domains: { amour: '❤️ Amour', travail: '💼 Travail', energie: '⚡ Énergie' },
+    calm: "Ciel calme : peu d'aspects marquants, journée neutre.",
+    best: 'Meilleur jour', worst: 'plus délicat', see: '▾ voir le thème', del: 'Supprimer',
+    confirmDel: n => `Supprimer le thème de ${n} ?`,
+    aspConj: (T, N) => `${T.g} ${T.n} passe sur votre ${N.n} : projecteur sur ${N.kw}.`,
+    aspGood: (T, verb, N) => `${T.g} ${T.n} ${verb} votre ${N.n} : bon moment pour ${N.ok}.`,
+    aspBad: (T, verb, N) => `${T.g} ${T.n} ${verb} votre ${N.n} : ${N.ko}.`,
+    themeHead: n => `🪐 thème natal de ${n}`, unknownTime: 'heure inconnue',
+    ascLbl: 'Ascendant', mcLbl: 'Milieu du Ciel', retroTitle: 'rétrograde', houseAbbr: 'M',
+    bigLines: 'Les grandes lignes', planetsLines: 'Planètes personnelles et sociales',
+    iSun: (s, kw) => `${kw} prend une tonalité ${s.t}.`,
+    iMoon: (s, kw, known) => `${kw} est d'essence ${s.t}${known ? '' : " (position approximative sans l'heure)"}.`,
+    iAsc: s => `au premier abord, on vous perçoit comme une personne ${s.t}.`,
+    iPlanet: (s, kw, house) => `${kw} se montre ${s.t}${house ? `, surtout dans le domaine ${house}` : ''}.`,
+    inSign: (pl, s) => `${pl} en ${s}`, ascIn: s => `Ascendant ${s}`,
+    elements: { feu: 'feu', terre: 'terre', air: 'air', eau: 'eau' },
+    elText: { feu: "l'élan et l'enthousiasme", terre: 'le concret et la constance', air: 'les idées et les échanges', eau: "la sensibilité et l'intuition" },
+    domEl: (el, counts, txt) => `Élément dominant : <b>${el}</b> (${counts}) — un tempérament qui privilégie ${txt}.`,
+    aspNames: { conjonction: 'conjonction', sextile: 'sextile', carre: 'carré', trigone: 'trigone', opposition: 'opposition' },
+    aspVerb: { sextile: 'en sextile avec', carre: 'en carré avec', trigone: 'en trigone avec', opposition: "s'oppose à" },
+    signs: [
+      ['Bélier', 'le', 'directe, ardente et pionnière'], ['Taureau', 'le', 'stable, sensuelle et persévérante'],
+      ['Gémeaux', 'les', 'curieuse, vive et communicative'], ['Cancer', 'le', 'sensible, protectrice et tournée vers les siens'],
+      ['Lion', 'le', 'généreuse, rayonnante et fière'], ['Vierge', 'la', 'précise, serviable et analytique'],
+      ['Balance', 'la', "diplomate, élégante et éprise d'harmonie"], ['Scorpion', 'le', 'intense, magnétique et passionnée'],
+      ['Sagittaire', 'le', 'optimiste, aventureuse et éprise de liberté'], ['Capricorne', 'le', 'ambitieuse, patiente et responsable'],
+      ['Verseau', 'le', 'indépendante, originale et humaniste'], ['Poissons', 'les', 'intuitive, rêveuse et compatissante']
+    ],
+    planets: {
+      sun: ['Soleil', 'votre identité profonde', 'vous affirmer', 'évitez les bras de fer'],
+      moon: ['Lune', 'votre monde émotionnel', 'prendre soin de vous et des vôtres', 'émotions à fleur de peau'],
+      mercury: ['Mercure', 'votre façon de penser et de communiquer', 'communiquer et négocier', "relisez avant d'envoyer"],
+      venus: ['Vénus', "votre manière d'aimer", 'partager un moment tendre', 'susceptibilités possibles en amour'],
+      mars: ['Mars', "votre énergie et votre façon d'agir", "passer à l'action", "gare à l'impatience"],
+      jupiter: ['Jupiter', "votre chance et votre goût de l'expansion", 'saisir une opportunité', 'ne promettez pas trop'],
+      saturn: ['Saturne', 'votre sens des responsabilités', 'poser des bases solides', 'un peu de lourdeur, patience'],
+      uranus: ['Uranus', 'votre besoin de changement', 'tenter du neuf', 'imprévus à gérer'],
+      neptune: ['Neptune', 'votre imaginaire', 'rêver et créer', 'restez lucide']
+    },
+    houses: ['de la personnalité', 'des ressources et des finances', "des échanges et de l'entourage proche",
+      'du foyer et de la famille', 'de la créativité, des loisirs et des enfants', 'du quotidien, du travail et de la santé',
+      'du couple et des associations', 'des transformations et des ressources partagées', 'des voyages et de la quête de sens',
+      "de la carrière et de l'image publique", 'des amitiés et des projets', "de l'intériorité et du lâcher-prise"],
+    demoName: 'Exemple',
+    featTitle: '✨ Fonctionnalités du site',
+    featBody: `
+      <h3>Météo astrale</h3>
+      <ul>
+        <li><b>Bulletin cosmique</b> : signes du Soleil et de la Lune, phase lunaire avec pourcentage d'illumination, aspect planétaire le plus serré du jour et planètes rétrogrades.</li>
+        <li><b>Une carte par proche</b> : note globale sur 100 et étoiles pour l'amour, le travail et l'énergie, calculées d'après les transits du jour sur le thème natal.</li>
+        <li><b>Deux phrases explicatives</b> par carte, tirées des aspects les plus marquants du moment.</li>
+        <li><b>Classement</b> 🥇🥈🥉 des proches selon leur ciel du jour.</li>
+        <li><b>Périodes</b> : aujourd'hui, demain, après-demain ou 7 jours (moyenne, avec le meilleur jour et le plus délicat).</li>
+      </ul>
+      <h3>Thème natal</h3>
+      <ul>
+        <li><b>Roue du thème</b> : signes colorés par élément, maisons, Ascendant (AS), Milieu du Ciel (MC) et aspects entre planètes (vert harmonieux, rouge tendu).</li>
+        <li><b>Tableau des positions</b> du Soleil à Neptune : signe, degré, maison et rétrogradation (℞).</li>
+        <li><b>Interprétation</b> : Soleil, Lune, Ascendant, planètes personnelles et sociales, élément dominant.</li>
+        <li><b>Heure inconnue</b> acceptée : l'Ascendant et les maisons sont alors masqués.</li>
+      </ul>
+      <h3>Ajout et gestion</h3>
+      <ul>
+        <li><b>＋ Ajouter un thème</b> : prénom, date, heure et lieu de naissance, avec recherche de ville.</li>
+        <li><b>Heure d'été historique</b> prise en compte grâce au fuseau horaire du lieu.</li>
+        <li><b>Suppression</b> d'un thème avec la croix ✕ de sa carte.</li>
+        <li><b>FR / EN</b> : tout le site passe d'une langue à l'autre, le choix est mémorisé.</li>
+        <li><b>📤 Partager</b> le lien du site.</li>
+      </ul>
+      <h3>Sous le capot</h3>
+      <ul>
+        <li>Positions planétaires calculées <b>dans le navigateur</b>, sans serveur ni clé API (écart inférieur à 0,05° avec les éphémérides de référence).</li>
+        <li class="f-dim">Thèmes enregistrés uniquement sur cet appareil : rien n'est envoyé en ligne. Contenu à visée ludique.</li>
+      </ul>`,
+    footer: `Positions planétaires calculées localement (éléments orbitaux de P. Schlyter, précision de quelques minutes d'arc) · maisons égales<br>
+      Lieux et fuseaux horaires : géocodage Open-Meteo.com · Thèmes enregistrés uniquement dans ce navigateur<br>
+      Contenu à visée ludique — l'astrologie n'a pas de valeur prédictive démontrée`,
+    signature: 'Créé par fef73 avec claude.ai', contact: '✉️ Contact / suggestion'
+  },
 
-const PLANETS = [
-  { k:'sun',     n:'Soleil',  g:'☉', c:'#ffd166', kw:'votre identité profonde', ok:'vous affirmer', ko:'évitez les bras de fer' },
-  { k:'moon',    n:'Lune',    g:'☽', c:'#dfe7ee', kw:'votre monde émotionnel', ok:'prendre soin de vous et des vôtres', ko:'émotions à fleur de peau' },
-  { k:'mercury', n:'Mercure', g:'☿', c:'#7ee4b8', kw:'votre façon de penser et de communiquer', ok:'communiquer et négocier', ko:'relisez avant d\'envoyer' },
-  { k:'venus',   n:'Vénus',   g:'♀', c:'#f4a3c0', kw:'votre manière d\'aimer', ok:'partager un moment tendre', ko:'susceptibilités possibles en amour' },
-  { k:'mars',    n:'Mars',    g:'♂', c:'#e76f51', kw:'votre énergie et votre façon d\'agir', ok:'passer à l\'action', ko:'gare à l\'impatience' },
-  { k:'jupiter', n:'Jupiter', g:'♃', c:'#f4a261', kw:'votre chance et votre goût de l\'expansion', ok:'saisir une opportunité', ko:'ne promettez pas trop' },
-  { k:'saturn',  n:'Saturne', g:'♄', c:'#a8b5c2', kw:'votre sens des responsabilités', ok:'poser des bases solides', ko:'un peu de lourdeur, patience' },
-  { k:'uranus',  n:'Uranus',  g:'♅', c:'#48cae4', kw:'votre besoin de changement', ok:'tenter du neuf', ko:'imprévus à gérer' },
-  { k:'neptune', n:'Neptune', g:'♆', c:'#457b9d', kw:'votre imaginaire', ok:'rêver et créer', ko:'restez lucide' }
+  en: {
+    locale: 'en-GB', docTitle: 'Family Sky',
+    eyebrow: 'ephemeris computed live',
+    title: 'Whose sky is kindest?',
+    periods: { 0: 'Today', 1: 'Tomorrow', 2: 'Day after', 7: '7 days' },
+    periodLbl: { 0: 'today', 1: 'tomorrow', 2: 'the day after tomorrow', 7: 'over the next 7 days' },
+    subtitle: (per, names) => `Astro weather ${per} for ${names}, based on their birth charts.`,
+    subtitleEmpty: 'Add a first birth chart to get started.',
+    and: ' and ',
+    add: '＋ Add a chart', share: '📤 Share', computed: 'computed ',
+    shareText: 'Whose sky is kindest today?', copied: 'Link copied to the clipboard.',
+    formHead: '✨ new birth chart', fName: 'First name', fDate: 'Date of birth', fTime: 'Time (local)',
+    fNoTime: 'time unknown', fPlace: 'Place of birth', fPlacePh: 'City…', fSave: 'Calculate and add', fCancel: 'Cancel',
+    errName: 'Enter a first name.', errDate: 'Enter the date of birth.',
+    errTime: 'Enter the time or tick “time unknown”.', errPlace: 'Pick the place from the suggestions.',
+    noPlace: 'No place found', offline: 'Search unavailable (offline?)',
+    hint: "Tap a card to show that person's full birth chart.",
+    skyHead: '🔭 cosmic bulletin', from: 'from ',
+    skySummary: (sun, moon, retro) => `The Sun is in <b>${sun.n}</b> ${sun.g} and the Moon is in <b>${moon.n}</b> ${moon.g}. ` +
+      (retro.length ? `Retrograde: ${retro.join(', ')}.` : 'No planet is retrograde.'),
+    phaseLbl: 'Moon phase', tightLbl: 'Tightest aspect', retroLbl: 'Retrograde', none: 'none', orb: 'orb',
+    phases: ['New moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'],
+    domains: { amour: '❤️ Love', travail: '💼 Work', energie: '⚡ Energy' },
+    calm: 'Quiet sky: few notable aspects, a neutral day.',
+    best: 'Best day', worst: 'trickiest', see: '▾ see the chart', del: 'Delete',
+    confirmDel: n => `Delete ${n}'s chart?`,
+    aspConj: (T, N) => `${T.g} ${T.n} crosses your ${N.n}: spotlight on ${N.kw}.`,
+    aspGood: (T, verb, N) => `${T.g} ${T.n} ${verb} your ${N.n}: a good time to ${N.ok}.`,
+    aspBad: (T, verb, N) => `${T.g} ${T.n} ${verb} your ${N.n}: ${N.ko}.`,
+    themeHead: n => `🪐 birth chart of ${n}`, unknownTime: 'time unknown',
+    ascLbl: 'Ascendant', mcLbl: 'Midheaven', retroTitle: 'retrograde', houseAbbr: 'H',
+    bigLines: 'The big picture', planetsLines: 'Personal and social planets',
+    iSun: (s, kw) => `${kw} takes on a ${s.t} tone.`,
+    iMoon: (s, kw, known) => `${kw} is ${s.t} at heart${known ? '' : ' (approximate position without the time)'}.`,
+    iAsc: s => `at first glance, people see you as ${/^[aeiou]/i.test(s.t) ? 'an' : 'a'} ${s.t} person.`,
+    iPlanet: (s, kw, house) => `${kw} comes across as ${s.t}${house ? `, especially in matters of ${house}` : ''}.`,
+    inSign: (pl, s) => `${pl} in ${s}`, ascIn: s => `Ascendant in ${s}`,
+    elements: { feu: 'fire', terre: 'earth', air: 'air', eau: 'water' },
+    elText: { feu: 'drive and enthusiasm', terre: 'practicality and steadiness', air: 'ideas and exchange', eau: 'sensitivity and intuition' },
+    domEl: (el, counts, txt) => `Dominant element: <b>${el}</b> (${counts}) — a temperament that favours ${txt}.`,
+    aspNames: { conjonction: 'conjunction', sextile: 'sextile', carre: 'square', trigone: 'trine', opposition: 'opposition' },
+    aspVerb: { sextile: 'sextile', carre: 'square', trigone: 'trine', opposition: 'opposes' },
+    signs: [
+      ['Aries', '', 'direct, ardent and pioneering'], ['Taurus', '', 'steady, sensual and persevering'],
+      ['Gemini', '', 'curious, lively and talkative'], ['Cancer', '', 'sensitive, protective and family-minded'],
+      ['Leo', '', 'generous, radiant and proud'], ['Virgo', '', 'precise, helpful and analytical'],
+      ['Libra', '', 'diplomatic, elegant and harmony-loving'], ['Scorpio', '', 'intense, magnetic and passionate'],
+      ['Sagittarius', '', 'optimistic, adventurous and freedom-loving'], ['Capricorn', '', 'ambitious, patient and responsible'],
+      ['Aquarius', '', 'independent, original and humanist'], ['Pisces', '', 'intuitive, dreamy and compassionate']
+    ],
+    planets: {
+      sun: ['Sun', 'your core identity', 'assert yourself', 'avoid power struggles'],
+      moon: ['Moon', 'your emotional world', 'take care of yourself and your loved ones', 'emotions run high'],
+      mercury: ['Mercury', 'the way you think and communicate', 'talk things through and negotiate', 'double-check before you hit send'],
+      venus: ['Venus', 'the way you love', 'share a tender moment', 'touchy moments in love are possible'],
+      mars: ['Mars', 'your energy and drive', 'take action', 'watch out for impatience'],
+      jupiter: ['Jupiter', 'your luck and appetite for growth', 'seize an opportunity', "don't overpromise"],
+      saturn: ['Saturn', 'your sense of responsibility', 'lay solid foundations', 'things feel heavy, be patient'],
+      uranus: ['Uranus', 'your need for change', 'try something new', 'expect the unexpected'],
+      neptune: ['Neptune', 'your imagination', 'dream and create', 'stay clear-headed']
+    },
+    houses: ['personality', 'money and resources', 'communication and close surroundings',
+      'home and family', 'creativity, leisure and children', 'daily life, work and health',
+      'partnerships', 'transformation and shared resources', 'travel and the search for meaning',
+      'career and public image', 'friendships and projects', 'inner life and letting go'],
+    demoName: 'Example',
+    featTitle: '✨ Site features',
+    featBody: `
+      <h3>Astro weather</h3>
+      <ul>
+        <li><b>Cosmic bulletin</b>: Sun and Moon signs, moon phase with illumination percentage, the day's tightest planetary aspect and retrograde planets.</li>
+        <li><b>One card per person</b>: overall score out of 100 and stars for love, work and energy, based on the day's transits over the birth chart.</li>
+        <li><b>Two plain-language sentences</b> per card, drawn from the most notable aspects.</li>
+        <li><b>Ranking</b> 🥇🥈🥉 of your loved ones by today's sky.</li>
+        <li><b>Periods</b>: today, tomorrow, the day after or 7 days (average, with the best and trickiest day).</li>
+      </ul>
+      <h3>Birth chart</h3>
+      <ul>
+        <li><b>Chart wheel</b>: signs coloured by element, houses, Ascendant (AS), Midheaven (MC) and aspects between planets (green harmonious, red tense).</li>
+        <li><b>Position table</b> from the Sun to Neptune: sign, degree, house and retrograde (℞).</li>
+        <li><b>Interpretation</b>: Sun, Moon, Ascendant, personal and social planets, dominant element.</li>
+        <li><b>Unknown birth time</b> supported: the Ascendant and houses are then hidden.</li>
+      </ul>
+      <h3>Adding and managing</h3>
+      <ul>
+        <li><b>＋ Add a chart</b>: first name, date, time and place of birth, with city search.</li>
+        <li><b>Historical daylight saving time</b> handled through the place's time zone.</li>
+        <li><b>Delete</b> a chart with the ✕ on its card.</li>
+        <li><b>FR / EN</b>: the whole site switches language, and your choice is remembered.</li>
+        <li><b>📤 Share</b> the site link.</li>
+      </ul>
+      <h3>Under the hood</h3>
+      <ul>
+        <li>Planet positions computed <b>in the browser</b>, no server or API key (within 0.05° of reference ephemerides).</li>
+        <li class="f-dim">Charts are stored only on this device: nothing is sent online. For entertainment only.</li>
+      </ul>`,
+    footer: `Planet positions computed locally (P. Schlyter's orbital elements, accurate to a few arcminutes) · equal houses<br>
+      Places and time zones: Open-Meteo.com geocoding · Charts stored only in this browser<br>
+      For entertainment only — astrology has no demonstrated predictive value`,
+    signature: 'Made by fef73 with claude.ai', contact: '✉️ Contact / suggestion'
+  }
+};
+
+// ---------- Données ----------
+const SIGN_DATA = [['♈','feu'],['♉','terre'],['♊','air'],['♋','eau'],['♌','feu'],['♍','terre'],
+  ['♎','air'],['♏','eau'],['♐','feu'],['♑','terre'],['♒','air'],['♓','eau']];
+const PLANET_DATA = [
+  { k:'sun', g:'☉', c:'#ffd166' }, { k:'moon', g:'☽', c:'#dfe7ee' }, { k:'mercury', g:'☿', c:'#7ee4b8' },
+  { k:'venus', g:'♀', c:'#f4a3c0' }, { k:'mars', g:'♂', c:'#e76f51' }, { k:'jupiter', g:'♃', c:'#f4a261' },
+  { k:'saturn', g:'♄', c:'#a8b5c2' }, { k:'uranus', g:'♅', c:'#48cae4' }, { k:'neptune', g:'♆', c:'#457b9d' }
 ];
-const P = Object.fromEntries(PLANETS.map(p => [p.k, p]));
-
-const HOUSES = ['de la personnalité','des ressources et des finances','des échanges et de l\'entourage proche',
-  'du foyer et de la famille','de la créativité, des loisirs et des enfants','du quotidien, du travail et de la santé',
-  'du couple et des associations','des transformations et des ressources partagées','des voyages et de la quête de sens',
-  'de la carrière et de l\'image publique','des amitiés et des projets','de l\'intériorité et du lâcher-prise'];
-
 const ASPECTS = [
-  { n:'conjonction', a:0,   orb:6, g:'☌', q:null },
-  { n:'sextile',     a:60,  orb:4, g:'⚹', q:0.7 },
-  { n:'carré',       a:90,  orb:5, g:'□', q:-0.9 },
-  { n:'trigone',     a:120, orb:5, g:'△', q:1 },
-  { n:'opposition',  a:180, orb:6, g:'☍', q:-0.7 }
+  { k:'conjonction', a:0,   orb:6, g:'☌', q:null },
+  { k:'sextile',     a:60,  orb:4, g:'⚹', q:0.7 },
+  { k:'carre',       a:90,  orb:5, g:'□', q:-0.9 },
+  { k:'trigone',     a:120, orb:5, g:'△', q:1 },
+  { k:'opposition',  a:180, orb:6, g:'☍', q:-0.7 }
 ];
-const ASP_VERB = { conjonction:'passe sur', sextile:'en sextile avec', 'carré':'en carré avec', trigone:'en trigone avec', opposition:'s\'oppose à' };
 const CONJ_Q = { sun:0.4, moon:0.4, mercury:0.4, venus:0.9, jupiter:0.9, mars:-0.4, saturn:-0.8 };
 const T_WEIGHT = { sun:1, moon:0.8, mercury:0.9, venus:1, mars:1.1, jupiter:1.2, saturn:1.2 };
 const TRANSITING = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
-const NATAL_PTS = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
-const DOMAINS = {
-  amour:   { lbl:'❤️ Amour',   pl:['venus','moon','mars'] },
-  travail: { lbl:'💼 Travail', pl:['saturn','jupiter','mercury','sun'] },
-  energie: { lbl:'⚡ Énergie', pl:['mars','sun','moon'] }
-};
+const NATAL_PTS = TRANSITING;
+const DOMAINS = { amour:['venus','moon','mars'], travail:['saturn','jupiter','mercury','sun'], energie:['mars','sun','moon'] };
 const ACCENTS = ['#f4a261','#7ee4b8','#e76f51','#48cae4','#ffd166','#2a9d8f','#c3a6ff','#f4a3c0'];
+
+// ---------- Langue ----------
+const LANG_KEY = 'ciel-des-proches-lang';
+let lang = (() => {
+  try { const v = localStorage.getItem(LANG_KEY); if (v === 'fr' || v === 'en') return v; } catch (e) {}
+  return (navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en';
+})();
+let L = T[lang], SIGNS, PLANETS, P;
+
+function buildLangData() {
+  L = T[lang];
+  SIGNS = SIGN_DATA.map(([g, el], i) => ({ n: L.signs[i][0], art: L.signs[i][1], t: L.signs[i][2], g: g + '︎', el }));
+  PLANETS = PLANET_DATA.map(p => { const [n, kw, ok, ko] = L.planets[p.k]; return { ...p, n, kw, ok, ko }; });
+  P = Object.fromEntries(PLANETS.map(p => [p.k, p]));
+}
 
 const signOf = lon => SIGNS[Math.floor(norm(lon) / 30)];
 const fmtDeg = lon => { const x = norm(lon) % 30; const d = Math.floor(x); const m = Math.floor((x - d) * 60); return `${d}°${String(m).padStart(2,'0')}′`; };
 const houseOf = (lon, asc) => Math.floor(norm(lon - asc) / 30) + 1;
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const joinNames = a => a.length > 1 ? a.slice(0, -1).join(', ') + L.and + a.at(-1) : (a[0] || '');
 
 // ---------- Stockage ----------
 const STORE_KEY = 'ciel-des-proches-v1';
-const DEMO = [{ id:'demo', name:'Exemple', date:'1985-07-14', time:'08:30',
+const DEMO = [{ id:'demo', name:'', date:'1985-07-14', time:'08:30',
   place:{ label:'Paris, Île-de-France, France', lat:48.8534, lon:2.3488, tz:'Europe/Paris' } }];
 function loadPeople() {
   try { const v = JSON.parse(localStorage.getItem(STORE_KEY)); if (Array.isArray(v)) return v; } catch (e) {}
-  return DEMO.slice();
+  return DEMO.map(d => ({ ...d }));
 }
 function savePeople() { try { localStorage.setItem(STORE_KEY, JSON.stringify(people)); } catch (e) {} }
+const nameOf = p => p.id === 'demo' ? L.demoName : p.name;
 
 let people = loadPeople();
 let period = 0;
@@ -437,7 +615,6 @@ function natalChart(p) {
   const { lon } = skyAt(ms);
   const res = { ms, lon, timeKnown: !!p.time };
   if (p.time) Object.assign(res, angles(ms, p.place.lat, p.place.lon));
-  // rétrogradations à la naissance
   const next = skyAt(ms + 86400000).lon;
   res.retro = {};
   for (const k of ['mercury','venus','mars','jupiter','saturn','uranus','neptune']) res.retro[k] = signedDiff(lon[k], next[k]) < 0;
@@ -460,28 +637,25 @@ function dayForecast(natal, ms) {
     const s = q * T_WEIGHT[t] * (1 - f.delta / f.asp.orb * 0.7);
     hits.push({ t, n, asp: f.asp, delta: f.delta, s });
   }
-  // humeur : élément de la Lune du jour vs Lune natale
-  const elT = signOf(tr.moon).el, elN = signOf(natal.lon.moon).el;
+  const elT = SIGN_DATA[Math.floor(norm(tr.moon) / 30)][1], elN = SIGN_DATA[Math.floor(norm(natal.lon.moon) / 30)][1];
   const compat = { feu:'air', air:'feu', terre:'eau', eau:'terre' };
   const mood = elT === elN ? 0.5 : (compat[elT] === elN ? 0.3 : -0.2);
   const scores = {};
-  for (const [k, dom] of Object.entries(DOMAINS)) {
+  for (const [k, pl] of Object.entries(DOMAINS)) {
     let sum = (k === 'amour' || k === 'energie') ? mood : 0;
-    for (const h of hits) if (dom.pl.includes(h.t) || dom.pl.includes(h.n)) sum += h.s;
+    for (const h of hits) if (pl.includes(h.t) || pl.includes(h.n)) sum += h.s;
     scores[k] = Math.max(8, Math.min(96, Math.round(50 + 14 * sum)));
   }
   scores.global = Math.round((scores.amour + scores.travail + scores.energie) / 3);
   hits.sort((x, y) => Math.abs(y.s) - Math.abs(x.s));
-  return { scores, hits, moonSign: signOf(tr.moon) };
+  return { scores, hits };
 }
 
 function aspectSentence(h) {
-  const T = P[h.t], N = P[h.n];
-  if (h.asp.n === 'conjonction') return `${T.g} ${T.n} passe sur votre ${N.n} : projecteur sur ${N.kw}.`;
-  const verb = ASP_VERB[h.asp.n];
-  return h.s >= 0
-    ? `${T.g} ${T.n} ${verb} votre ${N.n} : bon moment pour ${N.ok}.`
-    : `${T.g} ${T.n} ${verb} votre ${N.n} : ${N.ko}.`;
+  const Tp = P[h.t], N = P[h.n];
+  if (h.asp.k === 'conjonction') return L.aspConj(Tp, N);
+  const verb = L.aspVerb[h.asp.k];
+  return h.s >= 0 ? L.aspGood(Tp, verb, N) : L.aspBad(Tp, verb, N);
 }
 
 function noonOf(offsetDays) {
@@ -503,8 +677,17 @@ function periodForecast(natal) {
 // ---------- Rendu ----------
 const stars = v => { const n = Math.max(1, Math.min(5, Math.round(v / 20))); return '★'.repeat(n) + '<i>' + '★'.repeat(5 - n) + '</i>'; };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-const dayName = ms => new Date(ms).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric' });
-const periodLabel = () => ({ 0:'aujourd\'hui', 1:'demain', 2:'après-demain', 7:'sur 7 jours' })[period];
+const dayName = ms => new Date(ms).toLocaleDateString(L.locale, { weekday:'long', day:'numeric' });
+
+function applyStatic() {
+  document.documentElement.lang = lang;
+  document.title = L.docTitle;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = L[el.dataset.i18n]; });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = L[el.dataset.i18nHtml]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = L[el.dataset.i18nPh]; });
+  document.querySelectorAll('.day-toggle-btn').forEach(b => { b.textContent = L.periods[b.dataset.p]; });
+  document.querySelectorAll('#lang-switch button').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
 
 function renderSky() {
   const ms = noonOf(period === 7 ? 0 : period);
@@ -512,9 +695,8 @@ function renderSky() {
   const next = skyAt(ms + 86400000).lon;
   const elong = norm(lon.moon - lon.sun);
   const illum = Math.round((1 - cosd(elong)) / 2 * 100);
-  const phases = [['🌑','Nouvelle lune'],['🌒','Premier croissant'],['🌓','Premier quartier'],['🌔','Gibbeuse croissante'],
-    ['🌕','Pleine lune'],['🌖','Gibbeuse décroissante'],['🌗','Dernier quartier'],['🌘','Dernier croissant']];
-  const ph = phases[Math.floor(norm(elong + 22.5) / 45) % 8];
+  const icons = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+  const ph = Math.floor(norm(elong + 22.5) / 45) % 8;
   const retro = ['mercury','venus','mars','jupiter','saturn','uranus','neptune'].filter(k => signedDiff(lon[k], next[k]) < 0);
   let tight = null;
   const ks = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
@@ -522,30 +704,24 @@ function renderSky() {
     const f = findAspect(lon[ks[i]], lon[ks[j]]);
     if (f && (!tight || f.delta < tight.delta)) tight = { ...f, a: ks[i], b: ks[j] };
   }
-  const sun = signOf(lon.sun), moon = signOf(lon.moon);
-  const date = new Date(ms).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+  const date = new Date(ms).toLocaleDateString(L.locale, { weekday:'long', day:'numeric', month:'long' });
+  const orb = tight ? (lang === 'fr' ? tight.delta.toFixed(1).replace('.', ',') : tight.delta.toFixed(1)) : '';
   document.getElementById('sky').innerHTML = `
-    <div class="bulletin-header">🔭 bulletin cosmique <span class="right">${period === 7 ? 'à partir du ' : ''}${esc(date)}</span></div>
-    <div class="bulletin-summary">Le Soleil traverse le <b>${sun.n}</b> ${sun.g} et la Lune est en <b>${moon.n}</b> ${moon.g}.
-      ${retro.length ? `En rétrogradation : ${retro.map(k => P[k].n).join(', ')}.` : 'Aucune planète rétrograde.'}</div>
+    <div class="bulletin-header">${L.skyHead} <span class="right">${period === 7 ? L.from : ''}${esc(date)}</span></div>
+    <div class="bulletin-summary">${L.skySummary(signOf(lon.sun), signOf(lon.moon), retro.map(k => P[k].n))}</div>
     <div class="sky-row">
-      <div class="sky-chip">Phase lunaire<b>${ph[0]} ${ph[1]} · ${illum} %</b></div>
-      <div class="sky-chip">Aspect le plus serré<b>${tight ? `${P[tight.a].g} ${P[tight.a].n} ${tight.asp.g} ${P[tight.b].n} ${P[tight.b].g}` : '—'}</b>${tight ? `${tight.asp.n}, orbe ${tight.delta.toFixed(1).replace('.', ',')}°` : ''}</div>
-      <div class="sky-chip">Rétrogrades<b>${retro.length ? retro.map(k => P[k].g + ' ' + P[k].n).join(' · ') : 'aucune'}</b></div>
+      <div class="sky-chip">${L.phaseLbl}<b>${icons[ph]} ${L.phases[ph]} · ${illum} %</b></div>
+      <div class="sky-chip">${L.tightLbl}<b>${tight ? `${P[tight.a].g} ${P[tight.a].n} ${tight.asp.g} ${P[tight.b].n} ${P[tight.b].g}` : '—'}</b>${tight ? `${L.aspNames[tight.asp.k]}, ${L.orb} ${orb}°` : ''}</div>
+      <div class="sky-chip">${L.retroLbl}<b>${retro.length ? retro.map(k => P[k].g + ' ' + P[k].n).join(' · ') : L.none}</b></div>
     </div>`;
 }
 
 function renderCards() {
-  const subtitle = document.getElementById('subtitle');
-  const names = people.map(p => p.name);
-  subtitle.textContent = names.length
-    ? `Météo astrale ${periodLabel()} de ${names.length > 1 ? names.slice(0, -1).join(', ') + ' et ' + names.at(-1) : names[0]}, d'après leur thème natal.`
-    : 'Ajoutez un premier thème natal pour commencer.';
+  const names = people.map(nameOf);
+  document.getElementById('subtitle').textContent = names.length
+    ? L.subtitle(L.periodLbl[period], joinNames(names)) : L.subtitleEmpty;
 
-  const rows = people.map((p, i) => {
-    const natal = natalChart(p);
-    return { p, i, natal, fc: periodForecast(natal) };
-  });
+  const rows = people.map((p, i) => { const natal = natalChart(p); return { p, i, natal, fc: periodForecast(natal) }; });
   const ranking = rows.slice().sort((a, b) => b.fc.scores.global - a.fc.scores.global);
   const medals = ['🥇','🥈','🥉'];
 
@@ -553,30 +729,30 @@ function renderCards() {
     const sun = signOf(natal.lon.sun), moon = signOf(natal.lon.moon);
     const asc = natal.timeKnown ? signOf(natal.asc) : null;
     const rank = rows.length > 1 ? ranking.findIndex(r => r.p.id === p.id) : -1;
-    const lines = fc.hits.slice(0, 2).map(h => `<p>${aspectSentence(h)}</p>`).join('')
-      || '<p class="muted">Ciel calme : peu d\'aspects marquants, journée neutre.</p>';
-    const week = fc.days ? `<p class="muted">Meilleur jour : <b style="color:var(--text-hi)">${dayName(fc.best.ms)}</b> · plus délicat : ${dayName(fc.worst.ms)}</p>` : '';
+    const lines = fc.hits.slice(0, 2).map(h => `<p>${aspectSentence(h)}</p>`).join('') || `<p class="muted">${L.calm}</p>`;
+    const week = fc.days ? `<p class="muted">${L.best} : <b style="color:var(--text-hi)">${dayName(fc.best.ms)}</b> · ${L.worst} : ${dayName(fc.worst.ms)}</p>`.replace(/ : /g, lang === 'fr' ? ' : ' : ': ') : '';
+    const birth = new Date(p.date).toLocaleDateString(L.locale, { timeZone: 'UTC' });
     return `<div class="card${p.id === selectedId ? ' selected' : ''}" style="--accent:${ACCENTS[i % ACCENTS.length]}" data-id="${esc(p.id)}" tabindex="0">
       ${rank >= 0 && rank < 3 ? `<span class="rank">${medals[rank]}</span>` : ''}
-      <button class="card-del" data-del="${esc(p.id)}" title="Supprimer">✕</button>
+      <button class="card-del" data-del="${esc(p.id)}" title="${L.del}">✕</button>
       <div class="card-top"><div class="avatar">${sun.g}</div>
-        <div><div class="card-names">${esc(p.name)}</div><div class="card-city">${esc(p.place.label.split(',')[0])} · ${new Date(p.date).toLocaleDateString('fr-FR')}</div></div></div>
+        <div><div class="card-names">${esc(nameOf(p))}</div><div class="card-city">${esc(p.place.label.split(',')[0])} · ${birth}</div></div></div>
       <div class="card-score">${fc.scores.global}<span> /100</span></div>
       <div class="card-signs">☉ <b>${sun.n}</b> · ☽ <b>${moon.n}</b>${asc ? ` · AS <b>${asc.n}</b>` : ''}</div>
-      <div class="horo">${Object.entries(DOMAINS).map(([k, d]) => `<span class="horo-k">${d.lbl}</span><span class="stars">${stars(fc.scores[k])}</span>`).join('')}</div>
+      <div class="horo">${Object.keys(DOMAINS).map(k => `<span class="horo-k">${L.domains[k]}</span><span class="stars">${stars(fc.scores[k])}</span>`).join('')}</div>
       <div class="card-text">${lines}${week}</div>
-      <div class="card-foot">▾ voir le thème</div>
+      <div class="card-foot">${L.see}</div>
     </div>`;
   }).join('');
   document.getElementById('updated-at').textContent =
-    'calculé le ' + new Date().toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    L.computed + new Date().toLocaleString(L.locale, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
 }
 
 function wheelSVG(natal) {
   const C = 170, R1 = 160, R2 = 132, R3 = 100;
   const asc = natal.timeKnown ? natal.asc : 0;
-  const pt = (L, r) => { const t = (180 + L - asc) * RAD; return [C + r * Math.cos(t), C - r * Math.sin(t)]; };
-  let s = `<svg class="wheel" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Roue du thème natal">`;
+  const pt = (Lo, r) => { const t = (180 + Lo - asc) * RAD; return [C + r * Math.cos(t), C - r * Math.sin(t)]; };
+  let s = `<svg class="wheel" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg" role="img">`;
   s += `<circle class="w-ring" cx="${C}" cy="${C}" r="${R1}"/><circle class="w-ring" cx="${C}" cy="${C}" r="${R2}"/><circle class="w-ring" cx="${C}" cy="${C}" r="${R3}"/>`;
   const elCol = { feu:'rgba(231,111,81,.10)', terre:'rgba(42,157,143,.10)', air:'rgba(255,209,102,.08)', eau:'rgba(69,123,157,.14)' };
   for (let i = 0; i < 12; i++) {
@@ -600,24 +776,22 @@ function wheelSVG(natal) {
     const [lx, ly] = pt(natal.mc, R1 + 2);
     s += `<text class="w-lbl" x="${lx + 3}" y="${ly + 10}">MC</text>`;
   }
-  // aspects entre planètes natales
   for (let i = 0; i < PLANETS.length; i++) for (let j = i + 1; j < PLANETS.length; j++) {
     const a = natal.lon[PLANETS[i].k], b = natal.lon[PLANETS[j].k], f = findAspect(a, b);
-    if (!f || f.asp.n === 'conjonction') continue;
+    if (!f || f.asp.k === 'conjonction') continue;
     const col = f.asp.q > 0 ? '#7ee4b8' : '#e76f51';
     const [x1, y1] = pt(a, R3 - 2), [x2, y2] = pt(b, R3 - 2);
     s += `<line class="w-asp" stroke="${col}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
   }
-  // planètes avec anti-chevauchement
-  const placed = PLANETS.map(p => ({ p, L: natal.lon[p.k], r: (R2 + R3) / 2 })).sort((a, b) => a.L - b.L);
+  const placed = PLANETS.map(p => ({ p, Lo: natal.lon[p.k], r: (R2 + R3) / 2 })).sort((a, b) => a.Lo - b.Lo);
   for (let i = 0; i < placed.length; i++) {
     const prev = placed[i - 1];
-    if (prev && angDiff(prev.L, placed[i].L) < 8 && prev.r === placed[i].r) placed[i].r = placed[i].r - 18 < R3 - 8 ? (R2 + R3) / 2 : placed[i].r - 18;
+    if (prev && angDiff(prev.Lo, placed[i].Lo) < 8 && prev.r === placed[i].r) placed[i].r = placed[i].r - 18 < R3 - 8 ? (R2 + R3) / 2 : placed[i].r - 18;
   }
-  for (const { p, L, r } of placed) {
-    const [tx1, ty1] = pt(L, R2), [tx2, ty2] = pt(L, R2 - 5);
+  for (const { p, Lo, r } of placed) {
+    const [tx1, ty1] = pt(Lo, R2), [tx2, ty2] = pt(Lo, R2 - 5);
     s += `<line class="w-tick" stroke="${p.c}" x1="${tx1}" y1="${ty1}" x2="${tx2}" y2="${ty2}"/>`;
-    const [x, y] = pt(L, r - 4);
+    const [x, y] = pt(Lo, r - 4);
     s += `<text class="w-pl" fill="${p.c}" x="${x}" y="${y}">${p.g}</text>`;
   }
   return s + '</svg>';
@@ -629,51 +803,59 @@ function renderTheme() {
   if (!p) { box.classList.add('hidden'); return; }
   const natal = natalChart(p);
   const rowsHTML = PLANETS.map(pl => {
-    const L = natal.lon[pl.k], sg = signOf(L);
-    return `<tr><td class="k"><span style="color:${pl.c}">${pl.g}</span> ${pl.n}${natal.retro[pl.k] ? ' <span title="rétrograde">℞</span>' : ''}</td>
-      <td>${sg.g} ${sg.n}</td><td class="deg">${fmtDeg(L)}${natal.timeKnown ? ` · M${houseOf(L, natal.asc)}` : ''}</td></tr>`;
+    const Lo = natal.lon[pl.k], sg = signOf(Lo);
+    return `<tr><td class="k"><span style="color:${pl.c}">${pl.g}</span> ${pl.n}${natal.retro[pl.k] ? ` <span title="${L.retroTitle}">℞</span>` : ''}</td>
+      <td>${sg.g} ${sg.n}</td><td class="deg">${fmtDeg(Lo)}${natal.timeKnown ? ` · ${L.houseAbbr}${houseOf(Lo, natal.asc)}` : ''}</td></tr>`;
   }).join('') + (natal.timeKnown ? `
-      <tr><td class="k">AS Ascendant</td><td>${signOf(natal.asc).g} ${signOf(natal.asc).n}</td><td class="deg">${fmtDeg(natal.asc)}</td></tr>
-      <tr><td class="k">MC Milieu du Ciel</td><td>${signOf(natal.mc).g} ${signOf(natal.mc).n}</td><td class="deg">${fmtDeg(natal.mc)}</td></tr>` : '');
+      <tr><td class="k">AS ${L.ascLbl}</td><td>${signOf(natal.asc).g} ${signOf(natal.asc).n}</td><td class="deg">${fmtDeg(natal.asc)}</td></tr>
+      <tr><td class="k">MC ${L.mcLbl}</td><td>${signOf(natal.mc).g} ${signOf(natal.mc).n}</td><td class="deg">${fmtDeg(natal.mc)}</td></tr>` : '');
 
   const sun = signOf(natal.lon.sun), moon = signOf(natal.lon.moon);
-  let interp = `<p><b>☉ Soleil en ${sun.n}</b> — ${P.sun.kw} prend une tonalité ${sun.t}.</p>
-    <p><b>☽ Lune en ${moon.n}</b> — ${P.moon.kw} est d'essence ${moon.t}${natal.timeKnown ? '' : ' (position approximative sans l\'heure)'}.</p>`;
+  let interp = `<p><b>☉ ${L.inSign(P.sun.n, sun.n)}</b> — ${L.iSun(sun, P.sun.kw)}</p>
+    <p><b>☽ ${L.inSign(P.moon.n, moon.n)}</b> — ${L.iMoon(moon, P.moon.kw, natal.timeKnown)}</p>`;
   if (natal.timeKnown) {
     const as = signOf(natal.asc);
-    interp += `<p><b>AS Ascendant ${as.n}</b> — au premier abord, on vous perçoit comme une personne ${as.t}.</p>`;
+    interp += `<p><b>AS ${L.ascIn(as.n)}</b> — ${L.iAsc(as)}</p>`;
   }
   const others = ['mercury','venus','mars','jupiter','saturn'].map(k => {
     const pl = P[k], sg = signOf(natal.lon[k]);
-    const house = natal.timeKnown ? `, surtout dans le domaine ${HOUSES[houseOf(natal.lon[k], natal.asc) - 1]}` : '';
-    return `<p><b>${pl.g} ${pl.n} en ${sg.n}</b> — ${pl.kw} se montre ${sg.t}${house}.</p>`;
+    const house = natal.timeKnown ? L.houses[houseOf(natal.lon[k], natal.asc) - 1] : '';
+    return `<p><b>${pl.g} ${L.inSign(pl.n, sg.n)}</b> — ${L.iPlanet(sg, pl.kw, house)}</p>`;
   }).join('');
 
   const elems = { feu:0, terre:0, air:0, eau:0 };
   ['sun','moon','mercury','venus','mars','jupiter','saturn'].forEach(k => elems[signOf(natal.lon[k]).el]++);
   const domEl = Object.entries(elems).sort((a, b) => b[1] - a[1])[0][0];
-  const elText = { feu:'l\'élan et l\'enthousiasme', terre:'le concret et la constance', air:'les idées et les échanges', eau:'la sensibilité et l\'intuition' };
+  const counts = Object.entries(elems).map(([k, v]) => `${v} ${L.elements[k]}`).join(' · ');
 
-  const birth = new Date(natal.ms).toLocaleString('fr-FR', { timeZone: p.place.tz, dateStyle:'long', timeStyle: p.time ? 'short' : undefined });
+  const birth = new Date(natal.ms).toLocaleString(L.locale, { timeZone: p.place.tz, dateStyle:'long', timeStyle: p.time ? 'short' : undefined });
   box.innerHTML = `
-    <div class="bulletin-header">🪐 thème natal de ${esc(p.name)} <span class="right">${esc(birth)}${p.time ? '' : ' · heure inconnue'} · ${esc(p.place.label)}</span></div>
+    <div class="bulletin-header">${L.themeHead(esc(nameOf(p)))} <span class="right">${esc(birth)}${p.time ? '' : ' · ' + L.unknownTime} · ${esc(p.place.label)}</span></div>
     <div class="theme-grid">
       <div>${wheelSVG(natal)}</div>
       <div><table class="pos">${rowsHTML}</table></div>
     </div>
     <div class="interp">
-      <div class="sub">Les grandes lignes</div>
+      <div class="sub">${L.bigLines}</div>
       ${interp}
-      <p>Élément dominant : <b>${domEl}</b> (${elems.feu} feu · ${elems.terre} terre · ${elems.air} air · ${elems.eau} eau) — un tempérament qui privilégie ${elText[domEl]}.</p>
-      <div class="sub">Planètes personnelles et sociales</div>
+      <p>${L.domEl(L.elements[domEl], counts, L.elText[domEl])}</p>
+      <div class="sub">${L.planetsLines}</div>
       ${others}
     </div>`;
   box.classList.remove('hidden');
 }
 
-function renderAll() { renderSky(); renderCards(); renderTheme(); }
+function renderAll() { buildLangData(); applyStatic(); renderSky(); renderCards(); renderTheme(); }
 
 // ---------- Interactions ----------
+document.getElementById('lang-switch').addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]'); if (!b || b.dataset.lang === lang) return;
+  lang = b.dataset.lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (err) {}
+  fMsg.textContent = '';
+  renderAll();
+});
+
 document.getElementById('day-toggle').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   period = +b.dataset.p;
@@ -686,7 +868,7 @@ document.getElementById('cards').addEventListener('click', e => {
   if (del) {
     e.stopPropagation();
     const p = people.find(x => x.id === del.dataset.del);
-    if (p && confirm(`Supprimer le thème de ${p.name} ?`)) {
+    if (p && confirm(L.confirmDel(nameOf(p)))) {
       people = people.filter(x => x.id !== p.id);
       if (selectedId === p.id) selectedId = null;
       savePeople(); renderAll();
@@ -703,10 +885,10 @@ document.getElementById('cards').addEventListener('keydown', e => {
 });
 
 document.getElementById('share-btn').addEventListener('click', async () => {
-  const data = { title: document.title, text: 'Qui a le ciel le plus clément aujourd\'hui ?', url: location.href };
+  const data = { title: document.title, text: L.shareText, url: location.href };
   try {
     if (navigator.share) await navigator.share(data);
-    else { await navigator.clipboard.writeText(location.href); alert('Lien copié dans le presse-papiers.'); }
+    else { await navigator.clipboard.writeText(location.href); alert(L.copied); }
   } catch (e) {}
 });
 
@@ -731,12 +913,12 @@ fPlace.addEventListener('input', () => {
   if (q.length < 2) { suggest.classList.add('hidden'); return; }
   geoTimer = setTimeout(async () => {
     try {
-      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=fr&format=json`);
+      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=${lang}&format=json`);
       const j = await r.json();
       const res = (j.results || []).filter(x => x.timezone);
       suggest.innerHTML = res.length ? res.map((x, i) => `<button type="button" data-i="${i}">${esc(x.name)}
           <small>${esc([x.admin1, x.country].filter(Boolean).join(', '))}</small></button>`).join('')
-        : '<button type="button" disabled><small>Aucun lieu trouvé</small></button>';
+        : `<button type="button" disabled><small>${L.noPlace}</small></button>`;
       suggest.classList.remove('hidden');
       suggest.onclick = e => {
         const b = e.target.closest('button[data-i]'); if (!b) return;
@@ -746,7 +928,7 @@ fPlace.addEventListener('input', () => {
         suggest.classList.add('hidden');
       };
     } catch (e) {
-      suggest.innerHTML = '<button type="button" disabled><small>Recherche indisponible (connexion ?)</small></button>';
+      suggest.innerHTML = `<button type="button" disabled><small>${L.offline}</small></button>`;
       suggest.classList.remove('hidden');
     }
   }, 300);
@@ -756,10 +938,10 @@ document.addEventListener('click', e => { if (!e.target.closest('.place-field'))
 document.getElementById('f-save').addEventListener('click', () => {
   const err = m => { fMsg.textContent = m; fMsg.className = 'form-msg err'; };
   const name = fName.value.trim();
-  if (!name) return err('Indiquez un prénom.');
-  if (!fDate.value) return err('Indiquez la date de naissance.');
-  if (!fNoTime.checked && !fTime.value) return err('Indiquez l\'heure ou cochez « heure inconnue ».');
-  if (!chosenPlace) return err('Choisissez le lieu dans la liste proposée.');
+  if (!name) return err(L.errName);
+  if (!fDate.value) return err(L.errDate);
+  if (!fNoTime.checked && !fTime.value) return err(L.errTime);
+  if (!chosenPlace) return err(L.errPlace);
   const p = { id: 'p' + Date.now().toString(36), name, date: fDate.value, time: fNoTime.checked ? null : fTime.value, place: chosenPlace };
   people = people.filter(x => x.id !== 'demo');
   people.push(p);
