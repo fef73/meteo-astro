@@ -149,6 +149,17 @@
   .features-panel ul{margin:0;padding-left:20px;font-size:13.5px;line-height:1.7;}
   .features-panel li{margin-bottom:4px;}
   .features-panel .f-dim{color:var(--text-lo);}
+  .pal-row{display:grid;grid-template-columns:34px minmax(90px,170px) 1fr 44px;align-items:center;gap:10px;
+    padding:7px 6px;border-radius:9px;cursor:pointer;}
+  .pal-row:hover{background:rgba(126,228,184,.06);}
+  .pal-row.selected{background:rgba(126,228,184,.10);}
+  .pal-rank{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-lo);text-align:center;}
+  .pal-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pal-name small{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;color:var(--text-lo);}
+  .pal-bar{height:8px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden;}
+  .pal-bar i{display:block;height:100%;border-radius:99px;}
+  .pal-score{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;text-align:right;}
+  @media (max-width:480px){.pal-row{grid-template-columns:28px 1fr 60px 34px;gap:8px;}}
   .js-tooltip{position:fixed;z-index:9999;max-width:270px;background:var(--bg-card);border:1px solid var(--hairline);color:var(--text-hi);
     font:12px/1.5 'Space Grotesk',sans-serif;padding:8px 11px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none;}
   .js-tooltip b{font-weight:600;}
@@ -221,6 +232,9 @@
   <div class="bulletin" id="sky" style="margin-top:0;"></div>
 
   <div class="cards" id="cards"></div>
+
+  <!-- Palmarès -->
+  <div class="bulletin hidden" id="palmares"></div>
 
   <div class="hint-box"><span>💡</span><span data-i18n="hint"></span></div>
 
@@ -423,6 +437,8 @@ const T = {
       'du couple et des associations', 'des transformations et des ressources partagées', 'des voyages et de la quête de sens',
       "de la carrière et de l'image publique", 'des amitiés et des projets', "de l'intériorité et du lâcher-prise"],
     demoName: 'Exemple',
+    palHead: per => `🏆 palmarès ${per}`, palCount: n => `${n} thèmes`,
+    champions: 'Champions par domaine', palTip: 'Touchez une ligne pour afficher son thème natal.',
     tipPlanet: (pl, sg, deg, house, retro) => `<b>${pl.g} ${pl.n}</b> en ${sg.n} <span class="tip-lo">${deg}${house ? ' · maison ' + house : ''}</span><br>${cap(pl.kw)}.` +
       (house ? `<br><span class="tip-lo">Se joue surtout dans le domaine ${L.houses[house - 1]}.</span>` : '') + (retro ? `<br><span class="tip-lo">℞ Rétrograde à la naissance : énergie plus intériorisée.</span>` : ''),
     tipSign: (sg, el) => `<b>${sg.g} ${sg.n}</b> <span class="tip-lo">· signe ${el}</span><br>${cap(sg.t)}.`,
@@ -440,6 +456,7 @@ const T = {
         <li><b>Une carte par proche</b> : note globale sur 100 et étoiles pour l'amour, le travail et l'énergie, calculées d'après les transits du jour sur le thème natal.</li>
         <li><b>Deux phrases explicatives</b> par carte, tirées des aspects les plus marquants du moment.</li>
         <li><b>Classement</b> 🥇🥈🥉 des proches selon leur ciel du jour.</li>
+        <li><b>Palmarès</b> : tous les thèmes classés par note, avec les champions de l'amour, du travail et de l'énergie.</li>
         <li><b>Périodes</b> : aujourd'hui, demain, après-demain ou 7 jours (moyenne, avec le meilleur jour et le plus délicat).</li>
       </ul>
       <h3>Thème natal</h3>
@@ -537,6 +554,8 @@ const T = {
       'partnerships', 'transformation and shared resources', 'travel and the search for meaning',
       'career and public image', 'friendships and projects', 'inner life and letting go'],
     demoName: 'Example',
+    palHead: per => `🏆 leaderboard ${per}`, palCount: n => `${n} charts`,
+    champions: 'Champions by area', palTip: 'Tap a row to show that birth chart.',
     tipPlanet: (pl, sg, deg, house, retro) => `<b>${pl.g} ${pl.n}</b> in ${sg.n} <span class="tip-lo">${deg}${house ? ' · house ' + house : ''}</span><br>${cap(pl.kw)}.` +
       (house ? `<br><span class="tip-lo">Plays out mostly in matters of ${L.houses[house - 1]}.</span>` : '') + (retro ? `<br><span class="tip-lo">℞ Retrograde at birth: a more inward energy.</span>` : ''),
     tipSign: (sg, el) => `<b>${sg.g} ${sg.n}</b> <span class="tip-lo">· ${el} sign</span><br>${cap(sg.t)}.`,
@@ -554,6 +573,7 @@ const T = {
         <li><b>One card per person</b>: overall score out of 100 and stars for love, work and energy, based on the day's transits over the birth chart.</li>
         <li><b>Two plain-language sentences</b> per card, drawn from the most notable aspects.</li>
         <li><b>Ranking</b> 🥇🥈🥉 of your loved ones by today's sky.</li>
+        <li><b>Leaderboard</b>: every chart ranked by score, with the love, work and energy champions.</li>
         <li><b>Periods</b>: today, tomorrow, the day after or 7 days (average, with the best and trickiest day).</li>
       </ul>
       <h3>Birth chart</h3>
@@ -777,6 +797,7 @@ function renderCards() {
       <div class="card-foot">${L.see}</div>
     </div>`;
   }).join('');
+  renderPalmares(rows, ranking, medals);
   document.getElementById('updated-at').textContent =
     L.computed + new Date().toLocaleString(L.locale, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
 }
@@ -784,6 +805,30 @@ function renderCards() {
 function planetTip(natal, pl) {
   const Lo = natal.lon[pl.k];
   return L.tipPlanet(pl, signOf(Lo), fmtDeg(Lo), natal.timeKnown ? houseOf(Lo, natal.asc) : 0, natal.retro[pl.k]);
+}
+
+function renderPalmares(rows, ranking, medals) {
+  const box = document.getElementById('palmares');
+  if (rows.length < 2) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+  const list = ranking.map((r, k) => {
+    const sun = signOf(r.natal.lon.sun), v = r.fc.scores.global;
+    return `<div class="pal-row${r.p.id === selectedId ? ' selected' : ''}" data-id="${esc(r.p.id)}" title="${esc(L.palTip)}">
+      <span class="pal-rank">${k < 3 ? medals[k] : (k + 1) + '.'}</span>
+      <span class="pal-name">${esc(nameOf(r.p))}<small>${sun.g} ${sun.n}</small></span>
+      <span class="pal-bar"><i style="width:${v}%;background:${ACCENTS[r.i % ACCENTS.length]}"></i></span>
+      <span class="pal-score">${v}</span>
+    </div>`;
+  }).join('');
+  const champs = Object.keys(DOMAINS).map(k => {
+    const best = rows.reduce((a, b) => b.fc.scores[k] > a.fc.scores[k] ? b : a);
+    return `<div class="sky-chip">${L.domains[k]}<b>${esc(nameOf(best.p))} · ${best.fc.scores[k]}</b></div>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="bulletin-header">${L.palHead(L.periodLbl[period])} <span class="right">${L.palCount(rows.length)}</span></div>
+    ${list}
+    <div class="sub" style="margin-top:14px">${L.champions}</div>
+    <div class="sky-row" style="margin-top:6px">${champs}</div>`;
+  box.classList.remove('hidden');
 }
 
 function wheelSVG(natal) {
@@ -903,6 +948,13 @@ document.getElementById('day-toggle').addEventListener('click', e => {
   period = +b.dataset.p;
   document.querySelectorAll('.day-toggle-btn').forEach(x => x.classList.toggle('active', x === b));
   renderSky(); renderCards();
+});
+
+document.getElementById('palmares').addEventListener('click', e => {
+  const row = e.target.closest('.pal-row'); if (!row) return;
+  selectedId = row.dataset.id;
+  renderCards(); renderTheme();
+  document.getElementById('theme').scrollIntoView({ behavior:'smooth', block:'start' });
 });
 
 document.getElementById('cards').addEventListener('click', e => {
