@@ -74,6 +74,11 @@ Contenu à visée ludique : l'astrologie n'a pas de valeur prédictive démontr�
 |---|---|
 | `index.html` | Le site complet (HTML, CSS et JavaScript) |
 | `README.md` | Ce fichier |
+| `LICENSE` | Droits d'auteur et conditions de réutilisation |
+
+## Licence
+
+© 2026 Fernand (fef73) — tous droits réservés. Voir le fichier [LICENSE](LICENSE). Calculs astronomiques d'après les éléments orbitaux publiés par Paul Schlyter. Le géocodage reste soumis à la licence de son fournisseur (Open-Meteo, CC BY 4.0).
 
 ---
 
