@@ -85,6 +85,8 @@
   .card-text .muted{color:var(--text-lo);}
   .card-foot{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-lo);text-align:center;margin-top:6px;}
 
+  .ex-banner{margin:0 0 22px;border-color:rgba(244,162,97,.5);}
+  .ex-banner a{color:#f4a261;}
   .hint-box{display:flex;align-items:center;gap:10px;background:var(--bg-panel);border:1px solid var(--hairline);border-radius:12px;
     padding:12px 16px;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text-lo);}
 
@@ -221,6 +223,7 @@ html.fef73-locked #fef73-lock{display:flex;position:fixed;inset:0;z-index:214748
       [a,B,C,D,e,F,g,q].forEach(function(v,i){h[i]=(h[i]+v)|0})}
     return h.map(function(v){return(v>>>0).toString(16).padStart(8,"0")}).join("")}
   window.fef73Empreinte=function(pw){return sha("fef73:"+pw)};
+  if(/[?&]exemple(=|&|$)/.test(location.search))return;   // famille d'exemple publique (bonus de la Météo famille)
   var ok=false;try{ok=localStorage.getItem(K)===H||localStorage.getItem("mt-ok")===H}catch(e){}
   if(ok)return;
   R.classList.add("fef73-locked");
@@ -279,6 +282,9 @@ html.fef73-locked #fef73-lock{display:flex;position:fixed;inset:0;z-index:214748
       <span class="form-msg" id="f-msg"></span>
     </div>
   </div>
+
+  <!-- Famille d'exemple (?exemple) -->
+  <div class="hint-box ex-banner hidden" id="ex-banner"><span>✨</span><span data-i18n-html="exBanner"></span></div>
 
   <!-- Bulletin cosmique -->
   <div class="bulletin" id="sky" style="margin-top:0;"></div>
@@ -449,6 +455,7 @@ const T = {
     errTime: "Indiquez l'heure ou cochez « heure inconnue ».", errPlace: 'Choisissez le lieu dans la liste proposée.',
     noPlace: 'Aucun lieu trouvé', offline: 'Recherche indisponible (connexion ?)',
     hint: 'Touchez une carte pour afficher le thème natal complet de la personne.',
+    exBanner: "<b>Exemple :</b> le ciel des proches de la « Famille Exemple » (personnes fictives). Avec une <a href=\"https://meteo-loisirs.fr/\" target=\"_blank\" rel=\"noopener\">Météo famille</a>, le ciel de votre famille est offert, pré-rempli comme ici.",
     skyHead: '🔭 bulletin cosmique', from: 'à partir du ',
     skySummary: (sun, moon, retro) => `Le Soleil traverse ${sun.art} <b>${sun.n}</b> ${sun.g} et la Lune est en <b>${moon.n}</b> ${moon.g}. ` +
       (retro.length ? `En rétrogradation : ${retro.join(', ')}.` : 'Aucune planète rétrograde.'),
@@ -587,6 +594,7 @@ const T = {
     errTime: 'Enter the time or tick “time unknown”.', errPlace: 'Pick the place from the suggestions.',
     noPlace: 'No place found', offline: 'Search unavailable (offline?)',
     hint: "Tap a card to show that person's full birth chart.",
+    exBanner: "<b>Example:</b> the sky of the “Example Family” (fictional people). With a <a href=\"https://meteo-loisirs.fr/\" target=\"_blank\" rel=\"noopener\">Family Weather</a> page, your family's sky comes free, pre-filled like this one.",
     skyHead: '🔭 cosmic bulletin', from: 'from ',
     skySummary: (sun, moon, retro) => `The Sun is in <b>${sun.n}</b> ${sun.g} and the Moon is in <b>${moon.n}</b> ${moon.g}. ` +
       (retro.length ? `Retrograde: ${retro.join(', ')}.` : 'No planet is retrograde.'),
@@ -754,11 +762,21 @@ const joinNames = a => a.length > 1 ? a.slice(0, -1).join(', ') + L.and + a.at(-
 const STORE_KEY = 'ciel-des-proches-v1';
 const DEMO = [{ id:'demo', name:'', date:'1985-07-14', time:'08:30',
   place:{ label:'Paris, Île-de-France, France', lat:48.8534, lon:2.3488, tz:'Europe/Paris' } }];
+// Famille d'exemple de la Météo famille (meteo-loisirs.fr) : ?exemple — personnes fictives, rien n'est enregistré
+const EXEMPLE = new URLSearchParams(location.search).has('exemple');
+const FAMILLE_EXEMPLE = [
+  { id:'ex-jeanne', name:'Mamie Jeanne', date:'1948-03-12', time:'10:15', place:{ label:'Lyon, Auvergne-Rhône-Alpes, France', lat:45.7485, lon:4.8467, tz:'Europe/Paris' } },
+  { id:'ex-lea', name:'Léa', date:'1982-09-03', time:'14:40', place:{ label:'Marseille, Provence-Alpes-Côte d\'Azur, France', lat:43.2965, lon:5.3698, tz:'Europe/Paris' } },
+  { id:'ex-hugo', name:'Hugo', date:'2011-05-21', time:'07:05', place:{ label:'Marseille, Provence-Alpes-Côte d\'Azur, France', lat:43.2965, lon:5.3698, tz:'Europe/Paris' } },
+  { id:'ex-paul', name:'Paul', date:'1979-12-02', time:'22:30', place:{ label:'Bourg-Saint-Maurice, Auvergne-Rhône-Alpes, France', lat:45.6186, lon:6.7697, tz:'Europe/Paris' } },
+  { id:'ex-tom', name:'Tom', date:'2008-07-30', time:'', place:{ label:'Bordeaux, Nouvelle-Aquitaine, France', lat:44.8404, lon:-0.5805, tz:'Europe/Paris' } },
+];
 function loadPeople() {
+  if (EXEMPLE) return FAMILLE_EXEMPLE.map(d => ({ ...d, place:{ ...d.place } }));
   try { const v = JSON.parse(localStorage.getItem(STORE_KEY)); if (Array.isArray(v)) return v; } catch (e) {}
   return DEMO.map(d => ({ ...d }));
 }
-function savePeople() { try { localStorage.setItem(STORE_KEY, JSON.stringify(people)); } catch (e) {} }
+function savePeople() { if (EXEMPLE) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(people)); } catch (e) {} }
 const nameOf = p => p.id === 'demo' ? L.demoName : p.name;
 
 let people = loadPeople();
@@ -1096,6 +1114,7 @@ const fName = document.getElementById('f-name'), fDate = document.getElementById
       fPlace = document.getElementById('f-place'), suggest = document.getElementById('suggest'), fMsg = document.getElementById('f-msg');
 let chosenPlace = null, geoTimer = null;
 
+if (EXEMPLE) { document.getElementById('add-btn').classList.add('hidden'); document.getElementById('ex-banner').classList.remove('hidden'); }
 document.getElementById('add-btn').addEventListener('click', () => {
   formBlock.classList.toggle('hidden');
   if (!formBlock.classList.contains('hidden')) fName.focus();
