@@ -44,6 +44,10 @@ Site : https://fef73.github.io/meteo-astro/ — accessible aussi depuis le lance
 - Suppression d'un thème avec la croix ✕ de sa carte.
 - Une carte « Exemple » s'affiche tant qu'aucun thème n'est ajouté.
 
+## Famille d'exemple
+
+- `?exemple` (https://fef73.github.io/meteo-astro/?exemple) : ouvre sans mot de passe le ciel de la « Famille Exemple » (personnes fictives, mêmes prénoms que la famille d'exemple de la Météo famille sur meteo-loisirs.fr). Rien n'est enregistré dans le navigateur ; le bouton d'ajout est masqué. Lien utilisé par le « Bonus » de l'offre Météo famille.
+
 ## Calculs astronomiques
 
 - Positions du Soleil, de la Lune et des planètes jusqu'à Neptune à partir des **éléments orbitaux de Paul Schlyter** (équation de Kepler, perturbations principales de la Lune, de Jupiter, de Saturne et d'Uranus), longitudes écliptiques géocentriques.
