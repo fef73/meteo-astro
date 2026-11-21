@@ -18,7 +18,7 @@ Site : https://fef73.github.io/meteo-astro/ — accessible aussi depuis le lance
 - **Deux phrases explicatives** tirées des aspects les plus marquants (« ☉ Soleil en trigone avec votre Lune : bon moment pour… »).
 - Signes du Soleil, de la Lune et de l'Ascendant de la personne.
 - Classement 🥇🥈🥉 quand plusieurs thèmes sont enregistrés.
-- 4 périodes : aujourd'hui, demain, après-demain, 7 jours. Sur 7 jours, les notes sont des moyennes, avec le **meilleur jour** et le **plus délicat**.
+- 4 périodes : aujourd'hui, demain, après-demain, semaine. Sur la semaine (7 jours à venir), les notes sont des moyennes, avec le **meilleur jour** et le **plus délicat**.
 
 ## 🏆 Palmarès
 
