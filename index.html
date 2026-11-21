@@ -85,6 +85,7 @@
   .card-text .muted{color:var(--text-lo);}
   .card-foot{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-lo);text-align:center;margin-top:6px;}
 
+  .ex-retour{display:inline-block;margin:0 0 14px;font:500 13px 'IBM Plex Mono',monospace;color:#f4a261;text-decoration:none;border:1px solid rgba(244,162,97,.5);border-radius:999px;padding:6px 12px;}
   .ex-banner{margin:0 0 22px;border-color:rgba(244,162,97,.5);}
   .ex-banner a,#theme .interp a{color:#f4a261;font-weight:600;}
   .ex-banner a:visited,#theme .interp a:visited{color:#f4a261;}
@@ -238,6 +239,7 @@ html.fef73-locked #fef73-lock{display:flex;position:fixed;inset:0;z-index:214748
 
 <div class="wrap">
 
+  <a class="ex-retour hidden" id="ex-retour" href="https://meteo-loisirs.fr/" data-i18n="exBack"></a>
   <header>
     <div>
       <div class="eyebrow"><span class="pulse"></span> <span data-i18n="eyebrow"></span></div>
@@ -456,10 +458,11 @@ const T = {
     errTime: "Indiquez l'heure ou cochez « heure inconnue ».", errPlace: 'Choisissez le lieu dans la liste proposée.',
     noPlace: 'Aucun lieu trouvé', offline: 'Recherche indisponible (connexion ?)',
     hint: 'Touchez une carte pour afficher le thème natal complet de la personne.',
+    exBack: '← Retour à la Météo famille',
     hintEx: 'Touchez la carte de Mamie Jeanne pour voir un exemple de thème natal complet.',
-    exLocked: n => `Le thème natal complet de ${n} (roue du ciel, planètes, portrait) est inclus pour chacun de vos proches avec une <a href="https://meteo-loisirs.fr/" target="_blank" rel="noopener">Météo famille</a>.`,
+    exLocked: n => `Le thème natal complet de ${n} (roue du ciel, planètes, portrait) est inclus pour chacun de vos proches avec une <a href="https://meteo-loisirs.fr/">Météo famille</a>.`,
     exOpen: n => `Voir le thème de ${n} →`,
-    exBanner: "<b>Exemple :</b> le ciel des proches de la « Famille Exemple » (personnes fictives). Avec une <a href=\"https://meteo-loisirs.fr/\" target=\"_blank\" rel=\"noopener\">Météo famille</a>, le ciel de votre famille est offert, pré-rempli comme ici.",
+    exBanner: "<b>Exemple :</b> le ciel des proches de la « Famille Exemple » (personnes fictives). Avec une <a href=\"https://meteo-loisirs.fr/\">Météo famille</a>, le ciel de votre famille est offert, pré-rempli comme ici.",
     skyHead: '🔭 bulletin cosmique', from: 'à partir du ',
     skySummary: (sun, moon, retro) => `Le Soleil traverse ${sun.art} <b>${sun.n}</b> ${sun.g} et la Lune est en <b>${moon.n}</b> ${moon.g}. ` +
       (retro.length ? `En rétrogradation : ${retro.join(', ')}.` : 'Aucune planète rétrograde.'),
@@ -598,10 +601,11 @@ const T = {
     errTime: 'Enter the time or tick “time unknown”.', errPlace: 'Pick the place from the suggestions.',
     noPlace: 'No place found', offline: 'Search unavailable (offline?)',
     hint: "Tap a card to show that person's full birth chart.",
+    exBack: '← Back to Family Weather',
     hintEx: "Tap Mamie Jeanne's card to see an example of a full birth chart.",
-    exLocked: n => `${n}'s full birth chart (sky wheel, planets, portrait) is included for each of your loved ones with a <a href="https://meteo-loisirs.fr/" target="_blank" rel="noopener">Family Weather</a> page.`,
+    exLocked: n => `${n}'s full birth chart (sky wheel, planets, portrait) is included for each of your loved ones with a <a href="https://meteo-loisirs.fr/">Family Weather</a> page.`,
     exOpen: n => `See ${n}'s chart →`,
-    exBanner: "<b>Example:</b> the sky of the “Example Family” (fictional people). With a <a href=\"https://meteo-loisirs.fr/\" target=\"_blank\" rel=\"noopener\">Family Weather</a> page, your family's sky comes free, pre-filled like this one.",
+    exBanner: "<b>Example:</b> the sky of the “Example Family” (fictional people). With a <a href=\"https://meteo-loisirs.fr/\">Family Weather</a> page, your family's sky comes free, pre-filled like this one.",
     skyHead: '🔭 cosmic bulletin', from: 'from ',
     skySummary: (sun, moon, retro) => `The Sun is in <b>${sun.n}</b> ${sun.g} and the Moon is in <b>${moon.n}</b> ${moon.g}. ` +
       (retro.length ? `Retrograde: ${retro.join(', ')}.` : 'No planet is retrograde.'),
@@ -1137,7 +1141,7 @@ const fName = document.getElementById('f-name'), fDate = document.getElementById
       fPlace = document.getElementById('f-place'), suggest = document.getElementById('suggest'), fMsg = document.getElementById('f-msg');
 let chosenPlace = null, geoTimer = null;
 
-if (EXEMPLE) { document.getElementById('add-btn').classList.add('hidden'); document.getElementById('ex-banner').classList.remove('hidden'); }
+if (EXEMPLE) { document.getElementById('add-btn').classList.add('hidden'); document.getElementById('ex-banner').classList.remove('hidden'); document.getElementById('ex-retour').classList.remove('hidden'); }
 document.getElementById('add-btn').addEventListener('click', () => {
   formBlock.classList.toggle('hidden');
   if (!formBlock.classList.contains('hidden')) fName.focus();
