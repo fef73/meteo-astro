@@ -455,6 +455,9 @@ const T = {
     errTime: "Indiquez l'heure ou cochez « heure inconnue ».", errPlace: 'Choisissez le lieu dans la liste proposée.',
     noPlace: 'Aucun lieu trouvé', offline: 'Recherche indisponible (connexion ?)',
     hint: 'Touchez une carte pour afficher le thème natal complet de la personne.',
+    hintEx: 'Touchez la carte de Mamie Jeanne pour voir un exemple de thème natal complet.',
+    exLocked: n => `Le thème natal complet de ${n} (roue du ciel, planètes, portrait) est inclus pour chacun de vos proches avec une <a href="https://meteo-loisirs.fr/" target="_blank" rel="noopener">Météo famille</a>.`,
+    exOpen: n => `Voir le thème de ${n} →`,
     exBanner: "<b>Exemple :</b> le ciel des proches de la « Famille Exemple » (personnes fictives). Avec une <a href=\"https://meteo-loisirs.fr/\" target=\"_blank\" rel=\"noopener\">Météo famille</a>, le ciel de votre famille est offert, pré-rempli comme ici.",
     skyHead: '🔭 bulletin cosmique', from: 'à partir du ',
     skySummary: (sun, moon, retro) => `Le Soleil traverse ${sun.art} <b>${sun.n}</b> ${sun.g} et la Lune est en <b>${moon.n}</b> ${moon.g}. ` +
@@ -594,6 +597,9 @@ const T = {
     errTime: 'Enter the time or tick “time unknown”.', errPlace: 'Pick the place from the suggestions.',
     noPlace: 'No place found', offline: 'Search unavailable (offline?)',
     hint: "Tap a card to show that person's full birth chart.",
+    hintEx: "Tap Mamie Jeanne's card to see an example of a full birth chart.",
+    exLocked: n => `${n}'s full birth chart (sky wheel, planets, portrait) is included for each of your loved ones with a <a href="https://meteo-loisirs.fr/" target="_blank" rel="noopener">Family Weather</a> page.`,
+    exOpen: n => `See ${n}'s chart →`,
     exBanner: "<b>Example:</b> the sky of the “Example Family” (fictional people). With a <a href=\"https://meteo-loisirs.fr/\" target=\"_blank\" rel=\"noopener\">Family Weather</a> page, your family's sky comes free, pre-filled like this one.",
     skyHead: '🔭 cosmic bulletin', from: 'from ',
     skySummary: (sun, moon, retro) => `The Sun is in <b>${sun.n}</b> ${sun.g} and the Moon is in <b>${moon.n}</b> ${moon.g}. ` +
@@ -764,6 +770,7 @@ const DEMO = [{ id:'demo', name:'', date:'1985-07-14', time:'08:30',
   place:{ label:'Paris, Île-de-France, France', lat:48.8534, lon:2.3488, tz:'Europe/Paris' } }];
 // Famille d'exemple de la Météo famille (meteo-loisirs.fr) : ?exemple — personnes fictives, rien n'est enregistré
 const EXEMPLE = new URLSearchParams(location.search).has('exemple');
+const EX_OUVERT = 'ex-jeanne';   // seul thème complet visible dans l'exemple
 const FAMILLE_EXEMPLE = [
   { id:'ex-jeanne', name:'Mamie Jeanne', date:'1948-03-12', time:'10:15', place:{ label:'Lyon, Auvergne-Rhône-Alpes, France', lat:45.7485, lon:4.8467, tz:'Europe/Paris' } },
   { id:'ex-lea', name:'Léa', date:'1982-09-03', time:'14:40', place:{ label:'Marseille, Provence-Alpes-Côte d\'Azur, France', lat:43.2965, lon:5.3698, tz:'Europe/Paris' } },
@@ -1009,6 +1016,15 @@ function renderTheme() {
   const box = document.getElementById('theme');
   const p = people.find(x => x.id === selectedId);
   if (!p) { box.classList.add('hidden'); return; }
+  if (EXEMPLE && p.id !== EX_OUVERT) {   // exemple : un seul thème complet visible, les autres en aperçu
+    const j = people.find(x => x.id === EX_OUVERT);
+    box.innerHTML = `
+    <div class="bulletin-header">${L.themeHead(esc(nameOf(p)))}</div>
+    <div class="interp"><p>🔒 ${L.exLocked(esc(nameOf(p)))}</p>
+      ${j ? `<p><button class="btn btn-live" data-ex-open="${esc(j.id)}">${L.exOpen(esc(nameOf(j)))}</button></p>` : ''}</div>`;
+    box.classList.remove('hidden');
+    return;
+  }
   const natal = natalChart(p);
   const rowsHTML = PLANETS.map(pl => {
     const Lo = natal.lon[pl.k], sg = signOf(Lo);
@@ -1053,7 +1069,7 @@ function renderTheme() {
   box.classList.remove('hidden');
 }
 
-function renderAll() { buildLangData(); applyStatic(); renderSky(); renderCards(); renderTheme(); }
+function renderAll() { buildLangData(); applyStatic(); if (EXEMPLE) document.querySelector('[data-i18n="hint"]').textContent = L.hintEx; renderSky(); renderCards(); renderTheme(); }
 
 // ---------- Interactions ----------
 document.getElementById('lang-switch').addEventListener('click', e => {
@@ -1069,6 +1085,12 @@ document.getElementById('day-toggle').addEventListener('click', e => {
   period = +b.dataset.p;
   document.querySelectorAll('.day-toggle-btn').forEach(x => x.classList.toggle('active', x === b));
   renderSky(); renderCards();
+});
+
+document.getElementById('theme').addEventListener('click', e => {
+  const b = e.target.closest('[data-ex-open]'); if (!b) return;
+  selectedId = b.dataset.exOpen; renderCards(); renderTheme();
+  document.getElementById('theme').scrollIntoView({ behavior:'smooth', block:'start' });
 });
 
 document.getElementById('palmares').addEventListener('click', e => {
