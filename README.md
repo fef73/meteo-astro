@@ -46,7 +46,7 @@ Site : https://fef73.github.io/meteo-astro/ — accessible aussi depuis le lance
 
 ## Famille d'exemple
 
-- `?famille#d=<base64url>` : ciel d'une famille cliente de la Météo famille, préparé par l'outil des commandes de meteo-loisirs.fr (JSON {t, r, p:[{n, d, h, l, la, lo, tz}]}) ; ouvert sans mot de passe, tous les thèmes, rien d'enregistré, bouton retour vers la page de la famille.
+- Ciel d'une famille cliente : servi par meteo-loisirs.fr/famille/<code>/astro/ (famille/astro.php), qui récupère cette page et place avant le script `window.CIEL_FAMILLE = {t, r, p:[{n, d, h, l, la, lo, tz}]}` ; ouvert sans mot de passe, tous les thèmes, rien d'enregistré, bouton retour vers la page de la famille. Les naissances restent sur le serveur de meteo-loisirs.fr.
 - `?exemple` (https://fef73.github.io/meteo-astro/?exemple) : ouvre sans mot de passe le ciel de la « Famille Exemple » (personnes fictives, mêmes prénoms que la famille d'exemple de la Météo famille sur meteo-loisirs.fr). Rien n'est enregistré dans le navigateur ; le bouton d'ajout est masqué. Seul le thème natal de Mamie Jeanne s'ouvre en entier ; pour les autres, un encart renvoie vers l'offre. Lien utilisé par le « Bonus » de l'offre Météo famille.
 
 ## Calculs astronomiques
