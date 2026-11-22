@@ -226,7 +226,7 @@ html.fef73-locked #fef73-lock{display:flex;position:fixed;inset:0;z-index:214748
     return h.map(function(v){return(v>>>0).toString(16).padStart(8,"0")}).join("")}
   window.fef73Empreinte=function(pw){return sha("fef73:"+pw)};
   if(/[?&]exemple(=|&|$)/.test(location.search))return;   // famille d'exemple publique (bonus de la Météo famille)
-  if(/[?&]famille(=|&|$)/.test(location.search) && /[#&]d=/.test(location.hash))return;   // ciel d'une famille cliente (bonus, données dans le #)
+  if(window.CIEL_FAMILLE)return;   // ciel d'une famille cliente, servi par meteo-loisirs.fr/famille/<code>/astro/
   var ok=false;try{ok=localStorage.getItem(K)===H||localStorage.getItem("mt-ok")===H}catch(e){}
   if(ok)return;
   R.classList.add("fef73-locked");
@@ -786,19 +786,15 @@ const FAMILLE_EXEMPLE = [
   { id:'ex-paul', name:'Paul', date:'1979-12-02', time:'22:30', place:{ label:'Bourg-Saint-Maurice, Auvergne-Rhône-Alpes, France', lat:45.6186, lon:6.7697, tz:'Europe/Paris' } },
   { id:'ex-tom', name:'Tom', date:'2008-07-30', time:'', place:{ label:'Bordeaux, Nouvelle-Aquitaine, France', lat:44.8404, lon:-0.5805, tz:'Europe/Paris' } },
 ];
-// Ciel d'une famille cliente de la Météo famille : ?famille#d=<JSON en base64url> préparé par l'outil de meteo-loisirs.fr
-// {t: titre, r: lien de retour, p: [{n: prénom, d: AAAA-MM-JJ, h: HH:MM, l: lieu, la, lo, tz}]} — rien n'est enregistré
+// Ciel d'une famille cliente : servi par meteo-loisirs.fr/famille/<code>/astro/, qui place avant ce script
+// window.CIEL_FAMILLE = {t: titre, r: lien de retour, p: [{n: prénom, d: AAAA-MM-JJ, h: HH:MM, l: lieu, la, lo, tz}]} — rien n'est enregistré
 const FAMILLE = (() => {
-  if (!new URLSearchParams(location.search).has('famille')) return null;
-  try {
-    const b = new URLSearchParams(location.hash.slice(1)).get('d').replace(/-/g, '+').replace(/_/g, '/');
-    const x = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b), c => c.charCodeAt(0))));
-    const people = (x.p || []).slice(0, 12).filter(q => /^\d{4}-\d{2}-\d{2}$/.test(q.d) && isFinite(q.la) && isFinite(q.lo)).map((q, i) => ({
-      id: 'fam-' + i, name: String(q.n || '?').slice(0, 40), date: q.d, time: /^\d{2}:\d{2}$/.test(q.h || '') ? q.h : '',
-      place: { label: String(q.l || '').slice(0, 80), lat: +q.la, lon: +q.lo, tz: String(q.tz || 'Europe/Paris') } }));
-    const retour = /^https:\/\/meteo-loisirs\.fr\/famille\/[a-z0-9-]+\/$/.test(x.r || '') ? x.r : 'https://meteo-loisirs.fr/';
-    return people.length ? { titre: String(x.t || '').slice(0, 80), retour, people } : null;
-  } catch (e) { return null; }
+  const x = window.CIEL_FAMILLE; if (!x || typeof x !== 'object') return null;
+  const people = (x.p || []).slice(0, 12).filter(q => /^\d{4}-\d{2}-\d{2}$/.test(q.d) && isFinite(q.la) && isFinite(q.lo)).map((q, i) => ({
+    id: 'fam-' + i, name: String(q.n || '?').slice(0, 40), date: q.d, time: /^\d{2}:\d{2}$/.test(q.h || '') ? q.h : '',
+    place: { label: String(q.l || '').slice(0, 80), lat: +q.la, lon: +q.lo, tz: String(q.tz || 'Europe/Paris') } }));
+  const retour = /^(https:\/\/meteo-loisirs\.fr)?\/famille\/[a-z0-9-]+\/$/.test(x.r || '') ? x.r : 'https://meteo-loisirs.fr/';
+  return people.length ? { titre: String(x.t || '').slice(0, 80), retour, people } : null;
 })();
 function loadPeople() {
   if (FAMILLE) return FAMILLE.people.map(d => ({ ...d, place:{ ...d.place } }));
